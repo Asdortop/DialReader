@@ -1,0 +1,4 @@
+classifier,train photos,test photos,accuracy % (test photos),stress photos,accuracy % (stress photos)
+HOG + linear SVM,145,145,92.4,91,82.4
+LBP + SVM,145,145,97.2,91,68.1
+Bag of Words (SIFT) + SVM,145,145,97.9,91,68.1

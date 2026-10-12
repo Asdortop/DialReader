@@ -1,0 +1,4 @@
+gauge,true,read,status,error % FS
+pressure_gauge,6.4,6.4,reliable,0.002
+thermometer,37.0,37.016,reliable,0.011
+tyre_gauge,22.0,21.999,reliable,0.002

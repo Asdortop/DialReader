@@ -1,0 +1,574 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>DialReader results</title><style>
+:root{--bg:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--line:#e1e0d9;
+--accent:#2a78d6;--good:#0ca30c;--bad:#d03b3b;--warn:#b77700}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1120px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:30px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:22px;margin:44px 0 6px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:26px 0 6px}
+p{margin:8px 0;max-width:78ch} li{max-width:76ch;margin:3px 0}
+.lede{color:var(--ink2);font-size:16px;max-width:80ch}
+.meta{color:var(--muted);font-size:13px}
+nav{display:flex;flex-wrap:wrap;gap:6px 14px;margin:16px 0 4px;font-size:13.5px}
+nav a{color:var(--accent);text-decoration:none} nav a:hover{text-decoration:underline}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:16px 0}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tlabel{font-size:12.5px;color:var(--ink2)} .tvalue{font-size:26px;font-weight:650;margin:2px 0}
+.tsub{font-size:12.5px;color:var(--muted)}
+.tablewrap{overflow-x:auto;margin:10px 0 14px}
+table{border-collapse:collapse;background:var(--surface);font-size:13px;min-width:60%}
+caption{caption-side:top;text-align:left;color:var(--ink2);font-size:13px;padding:0 0 5px}
+th,td{padding:5px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--ink2);border-bottom:1px solid #c3c2b7;max-width:150px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.hl td{background:#eef4fc}
+figure{margin:14px 0 18px} figure img{max-width:100%;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+figcaption{font-size:13px;color:var(--ink2);margin-top:4px;max-width:90ch}
+.badge{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;border:1px solid}
+.badge.good{color:#006300;border-color:#9fd39f;background:#eef8ee}
+.badge.bad{color:#a32222;border-color:#e6b0b0;background:#fbeeee}
+.badge.flat{color:var(--ink2);border-color:#c3c2b7;background:#f2f1ec}
+.callout{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;
+padding:10px 14px;margin:14px 0;max-width:86ch}
+.callout.neg{border-left-color:var(--bad)} .callout.note{border-left-color:var(--warn)}
+.weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px}
+.week{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}
+.week h4{margin:0 0 2px;font-size:14.5px} .week p{font-size:13px;color:var(--ink2);margin:2px 0 8px}
+.week img{width:100%;border:1px solid var(--line);border-radius:6px}
+.missing{color:var(--bad);font-size:13px} code{background:#f0efec;padding:1px 5px;border-radius:4px;font-size:13px}
+details{margin:10px 0 14px} summary{cursor:pointer;color:var(--accent);font-size:13.5px;padding:4px 0}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px}
+</style></head><body><main><h1>DialReader: results</h1>
+<p class="meta">Image Processing and Computer Vision course project · built from the DialReader project plan ·
+generated 13 October 2026</p>
+<p class="lede">DialReader reads an analogue dial gauge from one photo with classical image processing, gives the value
+with an error bar, and says "unreliable" instead of guessing. GenAI is used at three narrow points only, each one
+tested against the classical pipeline. This page shows what was built and what was measured.</p>
+<nav><a href="#summary">Summary</a><a href="#pipeline">Pipeline</a><a href="#data">Data</a><a href="#e1">E1 stages</a>
+<a href="#e2">E2 robustness</a><a href="#genai">E3-E4 GenAI hooks</a><a href="#e5">E5 unseen gauges</a>
+<a href="#e6">E6 public photos</a><a href="#optional">Stages 9-11</a><a href="#weeks">Lab weeks</a>
+<a href="#limits">Limits</a><a href="#run">How to run</a></nav>
+<h2 id="summary">Summary</h2>
+<div class="tiles"><div class="tile"><div class="tlabel">Mean error, classical pipeline</div><div class="tvalue">0.02% FS</div><div class="tsub">reliable readings, synthetic test split</div></div><div class="tile"><div class="tlabel">Mean error, VLM alone</div><div class="tvalue">1.84% FS</div><div class="tsub">same photos, anthropic/claude-haiku-5.5</div></div><div class="tile"><div class="tlabel">Photos flagged reliable</div><div class="tvalue">90%</div><div class="tsub">stress set: 76%</div></div><div class="tile"><div class="tlabel">Reliable but grossly wrong</div><div class="tvalue">0%</div><div class="tsub">VLM alone on the stress set: 27%</div></div><div class="tile"><div class="tlabel">VLM spend for all experiments</div><div class="tvalue">$0.42</div><div class="tsub">1013 calls, each cached and logged</div></div></div>
+<ul>
+<li><b>The classical pipeline works on the synthetic set.</b> On 182 held-back test photos it
+answers 98%, with a median error of 0.01% of full scale,
+and 99% of its answers are within one scale division. It flags
+90% as reliable, and none of those is a gross error
+(above 10% of full scale).</li>
+<li><b>Abstention does its job.</b> Across the test split, the stress set and every robustness sweep, no reading that the classical pipeline flagged reliable was grossly wrong. The pipeline loses coverage under hard conditions, not correctness.</li>
+<li><b>Hook 1 (scale parser) works.</b> The VLM read the printed scale and geometry validated it:
+19 of 33 parses were accepted and none of the accepted ones was wrong. Every one of the
+11 gauge types got a validated scale, and readings with it match readings with the
+hand-entered scale.</li>
+<li><b>Hooks 2 and 3 did not help on this data.</b> The sentinel caught every gross error, but Stage 8 had already
+flagged all of them, so it only added false alarms. The repair loop did not beat a fixed-order rule by a measurable
+margin. Both are reported as negative results.</li>
+<li><b>Real photos are much harder.</b> On 21
+hand-picked public MeasureBench photos the classical pipeline put
+24% inside the
+valid interval and flagged most of the rest as unreliable. A current VLM alone did better there.</li>
+<li><b>Scope of the evidence.</b> The 290 photos are rendered, with exact ground truth. They stand in for the
+hand-collected set the plan calls for, which has not been photographed. Synthetic dials are cleaner than real ones,
+as the MeasureBench result shows.</li>
+</ul>
+<h2 id="pipeline">The pipeline</h2>
+<p>Eight classical stages do every measurement. Each stage is one or more lab programs.</p>
+<div class="tablewrap"><table><thead><tr><th>Stage</th><th>What it does</th><th>Techniques</th></tr></thead><tbody>
+<tr><td>1 Restore</td><td>Denoise, deblur, fix contrast, mask glare</td><td>Median and Gaussian filters, Wiener filter, cepstrum, CLAHE, unsharp mask</td></tr>
+<tr><td>2 Find the dial</td><td>Coarse circle, then an ellipse that ignores outlier edges</td><td>Canny with adaptive thresholds, Hough circle, RANSAC ellipse</td></tr>
+<tr><td>3 Undo the tilt</td><td>Map the ellipse back to a circle</td><td>Affine transform, circle-preserving homography</td></tr>
+<tr><td>4 Unwrap</td><td>Dial into a strip: angle by radius</td><td>Polar transform with bilinear interpolation</td></tr>
+<tr><td>5 Ticks</td><td>Tick positions, spacing, scale ends, major and minor</td><td>Black-hat, DFT, autocorrelation, comb fit</td></tr>
+<tr><td>6 Needle</td><td>Needle angle three ways, with a spread</td><td>Otsu, opening and closing, skeleton, line fit, Hough line</td></tr>
+<tr><td>7 Calibrate</td><td>Angle to value</td><td>Linear, log or piecewise interpolation between ticks</td></tr>
+<tr><td>8 Uncertainty</td><td>Error bar and reliable / unreliable flag</td><td>Eleven confidence signals, thresholds set on the validation split</td></tr>
+</tbody></table></div>
+<figure><a href="figures/pipeline_montage.png"><img src="figures/pipeline_montage.png" alt="One photo through Stages 1 to 8. Green dot: reliable. The strip (bottom left) is the dial unwrapped: ticks become vertical marks and the needle one vertical line." loading="lazy"></a><figcaption>One photo through Stages 1 to 8. Green dot: reliable. The strip (bottom left) is the dial unwrapped: ticks become vertical marks and the needle one vertical line.</figcaption></figure>
+<p>Three GenAI hooks plug in where the classical pipeline is weak or manual. Each must be validated by
+classical measurements and beat a classical alternative, or be reported as not helping. The pipeline runs with all of
+them off.</p>
+<div class="tablewrap"><table><thead><tr><th>Hook</th><th>Where</th><th>What the VLM does</th><th>Classical check</th></tr></thead><tbody>
+<tr><td>1 Scale parser</td><td>Before Stage 7</td><td>Reads unit, range, scale type, direction and the printed labels</td><td>Labels must match detected major ticks, be monotonic and evenly spaced</td></tr>
+<tr><td>2 Sentinel</td><td>After Stage 7</td><td>Gives a coarse reading from the original photo</td><td>Only raises a flag when it disagrees with geometry; never replaces the value</td></tr>
+<tr><td>3 Repair loop</td><td>After Stage 8, unreliable photos only</td><td>Looks at three overlays and picks one action from a fixed menu</td><td>The pipeline reruns and Stage 8 judges the result; the VLM never outputs a number</td></tr>
+</tbody></table></div>
+<h2 id="data">Data and ground truth</h2>
+<p>290 synthetic photos follow the plan's collection protocol: a base set of 10 readings for each
+of 11 gauge types in good conditions, and a variation set of 3 gauges x 10 readings x 3 tilts (0, 20, 40 degrees) x
+2 lightings (room, window glare), from two virtual phones. A dial is drawn flat, then photographed with perspective
+tilt, in-plane roll, uneven light, glare, lens blur, sensor noise and JPEG compression. The true reading is known exactly.</p>
+<ul><li><b>Validation split</b> (108 photos): used only to set the Stage 8 thresholds and the sentinel threshold.</li>
+<li><b>Test split</b> (182 photos): includes two gauge types, barometer and speedometer, held out entirely.</li>
+<li><b>Stress set</b> (182 photos): the test split with one severe degradation each, to supply hard cases.</li>
+<li><b>MeasureBench subset</b> (21 photos): public real-world photos, filtered by hand to single-needle circular dials.</li></ul>
+<div class="tablewrap"><table>
+<caption>Week 2 output: dataset statistics per gauge type</caption>
+<thead><tr><th class="">gauge</th><th class="num">photos</th><th class="num">width</th><th class="num">height</th><th class="num">mean_grey</th><th class="num">std_grey</th><th class="num">entropy_bits</th><th class="num">bright_fraction</th></tr></thead><tbody>
+<tr><td class="">barometer</td><td class="num">10</td><td class="num">960</td><td class="num">720</td><td class="num">151.53</td><td class="num">44.4</td><td class="num">6.42</td><td class="num">0.105</td></tr>
+<tr><td class="">hygrometer</td><td class="num">10</td><td class="num">960</td><td class="num">720</td><td class="num">159.38</td><td class="num">39.23</td><td class="num">6.33</td><td class="num">0.085</td></tr>
+<tr><td class="">kitchen_scale</td><td class="num">10</td><td class="num">960</td><td class="num">720</td><td class="num">183.44</td><td class="num">32.62</td><td class="num">6.35</td><td class="num">0.192</td></tr>
+<tr><td class="">megohmmeter</td><td class="num">10</td><td class="num">960</td><td class="num">720</td><td class="num">173.02</td><td class="num">45.47</td><td class="num">6.34</td><td class="num">0.145</td></tr>
+<tr><td class="">oven_thermometer</td><td class="num">10</td><td class="num">960</td><td class="num">720</td><td class="num">119.67</td><td class="num">47.41</td><td class="num">6.11</td><td class="num">0</td></tr>
+<tr><td class="">pressure_gauge</td><td class="num">70</td><td class="num">960</td><td class="num">720</td><td class="num">155.01</td><td class="num">48.19</td><td class="num">6.69</td><td class="num">0.14</td></tr>
+<tr><td class="">speedometer</td><td class="num">10</td><td class="num">960</td><td class="num">720</td><td class="num">120.83</td><td class="num">55.12</td><td class="num">6.27</td><td class="num">0.036</td></tr>
+<tr><td class="">thermometer</td><td class="num">70</td><td class="num">960</td><td class="num">720</td><td class="num">166.01</td><td class="num">40.39</td><td class="num">6.59</td><td class="num">0.155</td></tr>
+<tr><td class="">tyre_gauge</td><td class="num">70</td><td class="num">960</td><td class="num">720</td><td class="num">158.83</td><td class="num">50.31</td><td class="num">6.67</td><td class="num">0.157</td></tr>
+<tr><td class="">vacuum_gauge</td><td class="num">10</td><td class="num">960</td><td class="num">720</td><td class="num">160.91</td><td class="num">48.91</td><td class="num">6.53</td><td class="num">0.182</td></tr>
+<tr><td class="">voltmeter</td><td class="num">10</td><td class="num">960</td><td class="num">720</td><td class="num">157.55</td><td class="num">55.72</td><td class="num">6.46</td><td class="num">0.221</td></tr>
+</tbody></table></div>
+<h2 id="e1">E1: does each classical stage matter?</h2>
+<p>One stage is switched off at a time. The second block adds blur and noise, where restoration has work to do.</p>
+<figure><a href="figures/e1_stage_ablation.png"><img src="figures/e1_stage_ablation.png" alt="Gross-error rate among answered photos with one stage switched off." loading="lazy"></a><figcaption>Gross-error rate among answered photos with one stage switched off.</figcaption></figure>
+<div class="tablewrap"><table>
+<thead><tr><th class="">data</th><th class="">configuration</th><th class="num">n</th><th class="num">answered %</th><th class="num">mean error (% FS)</th><th class="">95% CI</th><th class="num">median</th><th class="num">90th pct</th><th class="num">gross error % (&gt;10% FS)</th><th class="num">within 1 division %</th><th class="num">coverage % (reliable)</th><th class="num">gross error % among reliable</th></tr></thead><tbody>
+<tr class="hl"><td class="">Test split</td><td class="">Full pipeline</td><td class="num">182</td><td class="num">97.8</td><td class="num">0.34</td><td class="">[0.04, 0.87]</td><td class="num">0.01</td><td class="num">0.04</td><td class="num">0.56</td><td class="num">98.88</td><td class="num">89.56</td><td class="num">0</td></tr>
+<tr><td class="">Test split</td><td class="">Stage 8 off (no abstention)</td><td class="num">182</td><td class="num">97.8</td><td class="num">0.34</td><td class="">[0.04, 0.87]</td><td class="num">0.01</td><td class="num">0.04</td><td class="num">0.56</td><td class="num">98.88</td><td class="num">97.8</td><td class="num">0.56</td></tr>
+<tr><td class="">Test split</td><td class="">Stage 1 off (no restoration)</td><td class="num">182</td><td class="num">98.35</td><td class="num">0.26</td><td class="">[0.02, 0.73]</td><td class="num">0.01</td><td class="num">0.04</td><td class="num">0.56</td><td class="num">99.44</td><td class="num">91.76</td><td class="num">0</td></tr>
+<tr><td class="">Test split</td><td class="">Stage 3 off (no tilt correction)</td><td class="num">182</td><td class="num">92.31</td><td class="num">2.83</td><td class="">[1.21, 4.86]</td><td class="num">0.02</td><td class="num">3.42</td><td class="num">5.36</td><td class="num">88.69</td><td class="num">56.04</td><td class="num">0</td></tr>
+<tr><td class="">Test split</td><td class="">Stage 4 off (no polar unwrap)</td><td class="num">182</td><td class="num">86.26</td><td class="num">1.43</td><td class="">[1.27, 1.60]</td><td class="num">1.27</td><td class="num">2.5</td><td class="num">0</td><td class="num">89.17</td><td class="num">86.26</td><td class="num">0</td></tr>
+<tr><td class="">Test split</td><td class="">Stage 5 check off (no DFT / comb fit)</td><td class="num">182</td><td class="num">97.8</td><td class="num">0.47</td><td class="">[0.16, 1.03]</td><td class="num">0.1</td><td class="num">0.32</td><td class="num">0.56</td><td class="num">97.75</td><td class="num">57.14</td><td class="num">0</td></tr>
+<tr class="hl"><td class="">Test split + blur 2 px + noise 12</td><td class="">Full pipeline</td><td class="num">182</td><td class="num">97.25</td><td class="num">0.34</td><td class="">[0.03, 0.93]</td><td class="num">0.02</td><td class="num">0.06</td><td class="num">0.56</td><td class="num">98.87</td><td class="num">87.91</td><td class="num">0</td></tr>
+<tr><td class="">Test split + blur 2 px + noise 12</td><td class="">Stage 8 off (no abstention)</td><td class="num">182</td><td class="num">97.25</td><td class="num">0.34</td><td class="">[0.03, 0.93]</td><td class="num">0.02</td><td class="num">0.06</td><td class="num">0.56</td><td class="num">98.87</td><td class="num">97.25</td><td class="num">0.56</td></tr>
+<tr><td class="">Test split + blur 2 px + noise 12</td><td class="">Stage 1 off (no restoration)</td><td class="num">182</td><td class="num">97.25</td><td class="num">1.23</td><td class="">[0.16, 2.62]</td><td class="num">0.02</td><td class="num">0.07</td><td class="num">2.26</td><td class="num">96.61</td><td class="num">87.91</td><td class="num">0</td></tr>
+<tr><td class="">Test split + blur 2 px + noise 12</td><td class="">Stage 3 off (no tilt correction)</td><td class="num">182</td><td class="num">96.15</td><td class="num">3.41</td><td class="">[1.49, 5.68]</td><td class="num">0.03</td><td class="num">3.43</td><td class="num">5.14</td><td class="num">89.14</td><td class="num">56.04</td><td class="num">0</td></tr>
+<tr><td class="">Test split + blur 2 px + noise 12</td><td class="">Stage 4 off (no polar unwrap)</td><td class="num">182</td><td class="num">87.36</td><td class="num">1.51</td><td class="">[1.35, 1.68]</td><td class="num">1.4</td><td class="num">2.79</td><td class="num">0</td><td class="num">89.94</td><td class="num">87.36</td><td class="num">0</td></tr>
+<tr><td class="">Test split + blur 2 px + noise 12</td><td class="">Stage 5 check off (no DFT / comb fit)</td><td class="num">182</td><td class="num">97.25</td><td class="num">0.44</td><td class="">[0.13, 1.03]</td><td class="num">0.09</td><td class="num">0.3</td><td class="num">0.56</td><td class="num">98.87</td><td class="num">64.29</td><td class="num">0</td></tr>
+</tbody></table></div>
+<div class="callout"><b>What it shows.</b>
+<ul><li><b>Tilt correction matters most.</b> Without it the gross-error rate goes from 0.6% to
+5.4% and coverage falls to 56%.</li>
+<li><b>Polar unwrap buys precision.</b> Without it the needle comes from a Hough line and the scale ends from a nominal
+start angle rather than from the ticks in the photo. The median error rises from 0.01% to
+1.27% of full scale, and it answers 86% of photos
+against 98%. It avoids gross errors only because it leans on hand-entered geometry.</li>
+<li><b>The comb fit buys coverage.</b> Without the DFT and comb check, coverage drops from
+90% to 57%, because missed or
+false ticks go uncorrected and the tick count stops matching.</li>
+<li><b>Restoration matters once the photo is degraded.</b> With blur and noise added, switching Stage 1 off raises the
+gross-error rate from 0.6% to
+2.3%. On clean photos it makes no difference.</li>
+<li><b>Abstention removes the gross errors.</b> Among readings flagged reliable the gross-error rate is
+0.0% in every row; the last row shows the rate if nothing is withheld.</li></ul></div>
+<h2 id="e2">E2: robustness, one factor at a time</h2>
+<p>Tilt and glare come from the variation set. The other factors are synthetic degradations of clean test photos. The VLM-alone baseline uses one photo per gauge type and three degraded levels per factor.</p>
+<figure><a href="figures/e2_robustness.png"><img src="figures/e2_robustness.png" alt="Share of photos read within one division (blue) and flagged reliable (green). Orange: the VLM alone within 5% of full scale; yellow: the VLM alone within one division." loading="lazy"></a><figcaption>Share of photos read within one division (blue) and flagged reliable (green). Orange: the VLM alone within 5% of full scale; yellow: the VLM alone within one division.</figcaption></figure>
+<figure><a href="figures/e2_robustness_error.png"><img src="figures/e2_robustness_error.png" alt="Mean error of the readings given. The classical line covers answered photos only, so it stays low while coverage drops; the VLM answers everything." loading="lazy"></a><figcaption>Mean error of the readings given. The classical line covers answered photos only, so it stays low while coverage drops; the VLM answers everything.</figcaption></figure>
+<div class="callout"><b>What it shows.</b> At least 95% of photos are read within one division for:
+Gaussian blur sigma 0, 1, 2, 3, 4 px; motion blur 1, 5, 9, 13, 17, 25 px; Gaussian noise sigma
+0, 5, 10, 20, 30, 45; salt-and-pepper 0, 1, 3, 6, 10, 20%; JPEG quality 95, 50, 30, 15, 8; tilt
+0, 20, 40 degrees. The weakest conditions are contrast 0.15 (57%); jpeg quality 4 (74%); gaussian blur 6 (82%); contrast 0.25 (86%).
+In no condition was a reading flagged reliable a gross error. When the pipeline cannot read a photo it says so.</div>
+<div class="callout"><b>Against the VLM alone.</b> The VLM shrugs off noise, brightness, contrast and
+JPEG artefacts: at noise sigma 45 it is still within 5% of full scale on 100% of photos. Blur is what breaks
+it. At Gaussian blur sigma 6 px it is within 5% of full scale on 9% of photos and 90% of its
+answers are gross errors, where the classical pipeline still reads 82% within one division. At motion blur
+25 px the VLM gets 0% and the classical pipeline 97%, because Stage 1 estimates the blur kernel and
+undoes it. The VLM gives no sign of which answers are the bad ones. Its sample is small (11 photos per level), so
+each photo moves a percentage by 9 points.</div>
+<details><summary>Full table: classical pipeline, every level (47 rows)</summary><div class="tablewrap"><table>
+<thead><tr><th class="">factor</th><th class="">level</th><th class="num">n</th><th class="num">answered %</th><th class="num">correct % (within 1 division)</th><th class="num">coverage % (reliable)</th><th class="num">mean error (% FS)</th><th class="num">gross error % (&gt;10% FS)</th><th class="num">gross error % among reliable</th></tr></thead><tbody>
+<tr><td class="">gaussian_blur</td><td class="">0</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">98.65</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_blur</td><td class="">1</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_blur</td><td class="">2</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_blur</td><td class="">3</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_blur</td><td class="">4</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">98.65</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_blur</td><td class="">6</td><td class="num">74</td><td class="num">89.19</td><td class="num">82.43</td><td class="num">78.38</td><td class="num">4.33</td><td class="num">6.06</td><td class="num">0</td></tr>
+<tr><td class="">motion_blur</td><td class="">1</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">98.65</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">motion_blur</td><td class="">5</td><td class="num">74</td><td class="num">100</td><td class="num">97.3</td><td class="num">91.89</td><td class="num">1.42</td><td class="num">1.35</td><td class="num">0</td></tr>
+<tr><td class="">motion_blur</td><td class="">9</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">motion_blur</td><td class="">13</td><td class="num">74</td><td class="num">98.65</td><td class="num">95.95</td><td class="num">89.19</td><td class="num">0.21</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">motion_blur</td><td class="">17</td><td class="num">74</td><td class="num">100</td><td class="num">95.95</td><td class="num">95.95</td><td class="num">1.58</td><td class="num">1.35</td><td class="num">0</td></tr>
+<tr><td class="">motion_blur</td><td class="">25</td><td class="num">74</td><td class="num">100</td><td class="num">97.3</td><td class="num">94.59</td><td class="num">1.12</td><td class="num">2.7</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_noise</td><td class="">0</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">98.65</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_noise</td><td class="">5</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_noise</td><td class="">10</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">98.65</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_noise</td><td class="">20</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_noise</td><td class="">30</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_noise</td><td class="">45</td><td class="num">74</td><td class="num">98.65</td><td class="num">95.95</td><td class="num">94.59</td><td class="num">0.72</td><td class="num">2.74</td><td class="num">0</td></tr>
+<tr><td class="">salt_pepper</td><td class="">0</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">98.65</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">salt_pepper</td><td class="">1</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">98.65</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">salt_pepper</td><td class="">3</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">98.65</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">salt_pepper</td><td class="">6</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">90.54</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">salt_pepper</td><td class="">10</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">90.54</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">salt_pepper</td><td class="">20</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">89.19</td><td class="num">0.03</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">jpeg_quality</td><td class="">95</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">jpeg_quality</td><td class="">50</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">jpeg_quality</td><td class="">30</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">jpeg_quality</td><td class="">15</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.03</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">jpeg_quality</td><td class="">8</td><td class="num">74</td><td class="num">97.3</td><td class="num">95.95</td><td class="num">91.89</td><td class="num">0.68</td><td class="num">1.39</td><td class="num">0</td></tr>
+<tr><td class="">jpeg_quality</td><td class="">4</td><td class="num">74</td><td class="num">82.43</td><td class="num">74.32</td><td class="num">67.57</td><td class="num">4.06</td><td class="num">4.92</td><td class="num">0</td></tr>
+<tr><td class="">brightness</td><td class="">-110</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">89.19</td><td class="num">0.04</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">brightness</td><td class="">-80</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">97.3</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">brightness</td><td class="">-40</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.01</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">brightness</td><td class="">0</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">98.65</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">brightness</td><td class="">40</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">brightness</td><td class="">80</td><td class="num">74</td><td class="num">93.24</td><td class="num">91.89</td><td class="num">91.89</td><td class="num">0.25</td><td class="num">1.45</td><td class="num">0</td></tr>
+<tr><td class="">contrast</td><td class="">0.15</td><td class="num">74</td><td class="num">56.76</td><td class="num">56.76</td><td class="num">56.76</td><td class="num">0.01</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">contrast</td><td class="">0.25</td><td class="num">74</td><td class="num">86.49</td><td class="num">86.49</td><td class="num">86.49</td><td class="num">0.01</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">contrast</td><td class="">0.45</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">contrast</td><td class="">1.0</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">98.65</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">contrast</td><td class="">1.5</td><td class="num">74</td><td class="num">100</td><td class="num">98.65</td><td class="num">98.65</td><td class="num">0.69</td><td class="num">1.35</td><td class="num">0</td></tr>
+<tr><td class="">contrast</td><td class="">2.0</td><td class="num">74</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">tilt</td><td class="">0.0</td><td class="num">18</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.01</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">tilt</td><td class="">20.0</td><td class="num">18</td><td class="num">100</td><td class="num">100</td><td class="num">100</td><td class="num">0.01</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">tilt</td><td class="">40.0</td><td class="num">18</td><td class="num">100</td><td class="num">100</td><td class="num">94.44</td><td class="num">0.2</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">glare</td><td class="">room</td><td class="num">54</td><td class="num">100</td><td class="num">100</td><td class="num">98.15</td><td class="num">0.08</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">glare</td><td class="">window</td><td class="num">54</td><td class="num">92.59</td><td class="num">88.89</td><td class="num">68.52</td><td class="num">1.1</td><td class="num">2</td><td class="num">0</td></tr>
+</tbody></table></div></details>
+<details><summary>Full table: VLM alone (33 rows)</summary><div class="tablewrap"><table>
+<thead><tr><th class="">factor</th><th class="">level</th><th class="num">n</th><th class="num">correct % (within 1 division)</th><th class="num">within 5% FS %</th><th class="num">mean error (% FS)</th><th class="num">gross error % (&gt;10% FS)</th></tr></thead><tbody>
+<tr><td class="">gaussian_blur</td><td class="">0</td><td class="num">11</td><td class="num">81.82</td><td class="num">100</td><td class="num">0.89</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_blur</td><td class="">1</td><td class="num">11</td><td class="num">81.82</td><td class="num">90.91</td><td class="num">1.08</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_blur</td><td class="">3</td><td class="num">11</td><td class="num">72.73</td><td class="num">81.82</td><td class="num">2.05</td><td class="num">9.09</td></tr>
+<tr><td class="">gaussian_blur</td><td class="">6</td><td class="num">11</td><td class="num">9.09</td><td class="num">9.09</td><td class="num">42.37</td><td class="num">90</td></tr>
+<tr><td class="">motion_blur</td><td class="">1</td><td class="num">11</td><td class="num">81.82</td><td class="num">100</td><td class="num">0.89</td><td class="num">0</td></tr>
+<tr><td class="">motion_blur</td><td class="">5</td><td class="num">11</td><td class="num">72.73</td><td class="num">100</td><td class="num">0.87</td><td class="num">0</td></tr>
+<tr><td class="">motion_blur</td><td class="">13</td><td class="num">11</td><td class="num">54.55</td><td class="num">54.55</td><td class="num">25.51</td><td class="num">36.36</td></tr>
+<tr><td class="">motion_blur</td><td class="">25</td><td class="num">11</td><td class="num">0</td><td class="num">0</td><td class="num">64.68</td><td class="num">90.91</td></tr>
+<tr><td class="">gaussian_noise</td><td class="">0</td><td class="num">11</td><td class="num">81.82</td><td class="num">100</td><td class="num">0.89</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_noise</td><td class="">5</td><td class="num">11</td><td class="num">72.73</td><td class="num">90.91</td><td class="num">1.46</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_noise</td><td class="">20</td><td class="num">11</td><td class="num">90.91</td><td class="num">100</td><td class="num">0.61</td><td class="num">0</td></tr>
+<tr><td class="">gaussian_noise</td><td class="">45</td><td class="num">11</td><td class="num">72.73</td><td class="num">100</td><td class="num">1.05</td><td class="num">0</td></tr>
+<tr><td class="">salt_pepper</td><td class="">0</td><td class="num">11</td><td class="num">81.82</td><td class="num">100</td><td class="num">0.89</td><td class="num">0</td></tr>
+<tr><td class="">salt_pepper</td><td class="">1</td><td class="num">11</td><td class="num">81.82</td><td class="num">100</td><td class="num">0.55</td><td class="num">0</td></tr>
+<tr><td class="">salt_pepper</td><td class="">6</td><td class="num">11</td><td class="num">72.73</td><td class="num">90.91</td><td class="num">1.29</td><td class="num">0</td></tr>
+<tr><td class="">salt_pepper</td><td class="">20</td><td class="num">11</td><td class="num">81.82</td><td class="num">90.91</td><td class="num">1.98</td><td class="num">9.09</td></tr>
+<tr><td class="">jpeg_quality</td><td class="">95</td><td class="num">11</td><td class="num">90.91</td><td class="num">100</td><td class="num">0.62</td><td class="num">0</td></tr>
+<tr><td class="">jpeg_quality</td><td class="">50</td><td class="num">11</td><td class="num">90.91</td><td class="num">100</td><td class="num">0.57</td><td class="num">0</td></tr>
+<tr><td class="">jpeg_quality</td><td class="">15</td><td class="num">11</td><td class="num">81.82</td><td class="num">100</td><td class="num">1.07</td><td class="num">0</td></tr>
+<tr><td class="">jpeg_quality</td><td class="">4</td><td class="num">11</td><td class="num">63.64</td><td class="num">81.82</td><td class="num">2.51</td><td class="num">9.09</td></tr>
+<tr><td class="">brightness</td><td class="">0</td><td class="num">11</td><td class="num">81.82</td><td class="num">100</td><td class="num">0.89</td><td class="num">0</td></tr>
+<tr><td class="">brightness</td><td class="">-110</td><td class="num">11</td><td class="num">81.82</td><td class="num">90.91</td><td class="num">0.95</td><td class="num">0</td></tr>
+<tr><td class="">brightness</td><td class="">-40</td><td class="num">11</td><td class="num">72.73</td><td class="num">100</td><td class="num">0.99</td><td class="num">0</td></tr>
+<tr><td class="">brightness</td><td class="">80</td><td class="num">11</td><td class="num">90.91</td><td class="num">100</td><td class="num">0.59</td><td class="num">0</td></tr>
+<tr><td class="">contrast</td><td class="">1.0</td><td class="num">11</td><td class="num">81.82</td><td class="num">100</td><td class="num">0.89</td><td class="num">0</td></tr>
+<tr><td class="">contrast</td><td class="">0.15</td><td class="num">11</td><td class="num">81.82</td><td class="num">100</td><td class="num">0.77</td><td class="num">0</td></tr>
+<tr><td class="">contrast</td><td class="">0.45</td><td class="num">11</td><td class="num">90.91</td><td class="num">100</td><td class="num">0.46</td><td class="num">0</td></tr>
+<tr><td class="">contrast</td><td class="">2.0</td><td class="num">11</td><td class="num">72.73</td><td class="num">81.82</td><td class="num">2.37</td><td class="num">9.09</td></tr>
+<tr><td class="">tilt</td><td class="">0.0</td><td class="num">18</td><td class="num">94.44</td><td class="num">94.44</td><td class="num">4.19</td><td class="num">5.56</td></tr>
+<tr><td class="">tilt</td><td class="">20.0</td><td class="num">18</td><td class="num">100</td><td class="num">100</td><td class="num">0.61</td><td class="num">0</td></tr>
+<tr><td class="">tilt</td><td class="">40.0</td><td class="num">18</td><td class="num">77.78</td><td class="num">88.89</td><td class="num">1.31</td><td class="num">0</td></tr>
+<tr><td class="">glare</td><td class="">room</td><td class="num">54</td><td class="num">90.74</td><td class="num">94.44</td><td class="num">2.04</td><td class="num">1.85</td></tr>
+<tr><td class="">glare</td><td class="">window</td><td class="num">54</td><td class="num">81.48</td><td class="num">92.59</td><td class="num">2.72</td><td class="num">1.85</td></tr>
+</tbody></table></div></details>
+<h2 id="genai">E3 and E4: do the GenAI hooks help?</h2>
+<p>Model: <code>anthropic/claude-haiku-5.5</code>. A hook counts as helpful only if a paired
+bootstrap against the step below it shows more useful readings (flagged reliable and within 2% of full scale) or fewer
+silent failures (flagged reliable but more than 10% out), with a 95% interval that excludes zero.</p>
+<h3>E3: the ablation ladder</h3>
+<div class="tablewrap"><table>
+<caption>Error columns are over readings flagged reliable. B has no reliability flag, so all its answers count.</caption>
+<thead><tr><th class="">data</th><th class="">id</th><th class="">what is switched on</th><th class="num">mean error (% FS)</th><th class="num">90th percentile</th><th class="num">gross-error rate % (reliable)</th><th class="num">coverage % (reliable)</th><th class="num">coverage % at risk &lt;= 2%</th><th class="num">useful readings % (reliable and correct)</th><th class="num">silent failures % (reliable but gross)</th><th class="num">VLM calls per image</th><th class="">verdict vs the step below</th></tr></thead><tbody>
+<tr><td class="">Test split</td><td class="">C0</td><td class="">Classical pipeline, scale entered by hand</td><td class="num">0.02</td><td class="num">0.04</td><td class="num">0</td><td class="num">89.56</td><td class="num">97.8</td><td class="num">89.56</td><td class="num">0</td><td class="num">0</td><td class=""></td></tr>
+<tr><td class="">Test split</td><td class="">C1</td><td class="">C0 + hook 1 (scale parser)</td><td class="num">0.02</td><td class="num">0.04</td><td class="num">0</td><td class="num">89.56</td><td class="num">97.8</td><td class="num">89.56</td><td class="num">0</td><td class="num">0.11</td><td class="">no loss against hand entry</td></tr>
+<tr><td class="">Test split</td><td class="">C2</td><td class="">C1 + hook 2 (sentinel flags)</td><td class="num">0.02</td><td class="num">0.04</td><td class="num">0</td><td class="num">86.26</td><td class="num">97.8</td><td class="num">86.26</td><td class="num">0</td><td class="num">1.11</td><td class="">hurts</td></tr>
+<tr><td class="">Test split</td><td class="">C3</td><td class="">C2 + hook 3 (repair loop)</td><td class="num">0.02</td><td class="num">0.04</td><td class="num">0</td><td class="num">87.91</td><td class="num">98.9</td><td class="num">87.91</td><td class="num">0</td><td class="num">1.37</td><td class="">no measurable effect</td></tr>
+<tr><td class="">Test split</td><td class="">B</td><td class="">VLM alone, as the baseline</td><td class="num">1.84</td><td class="num">2.81</td><td class="num">1.65</td><td class="num">100</td><td class="num">100</td><td class="num">85.71</td><td class="num">1.65</td><td class="num">1</td><td class=""></td></tr>
+<tr><td class="">Stress set</td><td class="">C0</td><td class="">Classical pipeline, scale entered by hand</td><td class="num">0.03</td><td class="num">0.07</td><td class="num">0</td><td class="num">75.82</td><td class="num">83.52</td><td class="num">75.82</td><td class="num">0</td><td class="num">0</td><td class=""></td></tr>
+<tr><td class="">Stress set</td><td class="">C1</td><td class="">C0 + hook 1 (scale parser)</td><td class="num">0.03</td><td class="num">0.07</td><td class="num">0</td><td class="num">75.82</td><td class="num">83.52</td><td class="num">75.82</td><td class="num">0</td><td class="num">0.11</td><td class="">no loss against hand entry</td></tr>
+<tr><td class="">Stress set</td><td class="">C2</td><td class="">C1 + hook 2 (sentinel flags)</td><td class="num">0.03</td><td class="num">0.06</td><td class="num">0</td><td class="num">53.85</td><td class="num">71.43</td><td class="num">53.85</td><td class="num">0</td><td class="num">1.11</td><td class="">hurts</td></tr>
+<tr><td class="">Stress set</td><td class="">C3</td><td class="">C2 + hook 3 (repair loop)</td><td class="num">0.76</td><td class="num">0.07</td><td class="num">0.97</td><td class="num">56.59</td><td class="num">58.79</td><td class="num">56.04</td><td class="num">0.55</td><td class="num">2.03</td><td class="">mixed: more useful readings, new silent failures</td></tr>
+<tr><td class="">Stress set</td><td class="">B</td><td class="">VLM alone, as the baseline</td><td class="num">14.61</td><td class="num">58.49</td><td class="num">26.92</td><td class="num">100</td><td class="num">45.6</td><td class="num">61.54</td><td class="num">26.92</td><td class="num">1</td><td class=""></td></tr>
+</tbody></table></div>
+<p>Change against the step below, in % of all photos, with its 95% interval:</p><ul><li><b>Test split, C1:</b> <span class="badge good">no loss against hand entry</span> useful +0.0 [+0.0, +0.0], silent failures +0.0 [+0.0, +0.0]</li><li><b>Test split, C2:</b> <span class="badge bad">hurts</span> useful -3.3 [-6.0, -1.1], silent failures +0.0 [+0.0, +0.0]</li><li><b>Test split, C3:</b> <span class="badge flat">no measurable effect</span> useful +1.6 [+0.0, +3.8], silent failures +0.0 [+0.0, +0.0]</li><li><b>Stress set, C1:</b> <span class="badge good">no loss against hand entry</span> useful +0.0 [+0.0, +0.0], silent failures +0.0 [+0.0, +0.0]</li><li><b>Stress set, C2:</b> <span class="badge bad">hurts</span> useful -22.0 [-28.0, -15.4], silent failures +0.0 [+0.0, +0.0]</li><li><b>Stress set, C3:</b> <span class="badge flat">mixed: more useful readings, new silent failures</span> useful +2.2 [+0.5, +4.4], silent failures +0.5 [+0.0, +1.6]</li></ul>
+<h3>Hook 1: scale parser</h3>
+<div class="tablewrap"><table>
+<caption>Three photos per gauge type. A parse is accepted only if its labels line up with detected major ticks and are monotonic and evenly spaced.</caption>
+<thead><tr><th class="">gauge type</th><th class="num">parses tried</th><th class="num">accepted by validation</th><th class="num">accepted and correct</th><th class="num">VLM answer correct without validation</th><th class="num">label-to-tick match rate %</th><th class="">rejection reasons</th></tr></thead><tbody>
+<tr><td class="">pressure_gauge</td><td class="num">3</td><td class="num">1</td><td class="num">1</td><td class="num">3</td><td class="num">57.6</td><td class="">too few labels line up with detected major ticks</td></tr>
+<tr><td class="">tyre_gauge</td><td class="num">3</td><td class="num">2</td><td class="num">2</td><td class="num">3</td><td class="num">81</td><td class="">too few labels line up with detected major ticks</td></tr>
+<tr><td class="">kitchen_scale</td><td class="num">3</td><td class="num">2</td><td class="num">2</td><td class="num">3</td><td class="num">77.8</td><td class="">too few labels line up with detected major ticks</td></tr>
+<tr><td class="">thermometer</td><td class="num">3</td><td class="num">2</td><td class="num">2</td><td class="num">3</td><td class="num">83.3</td><td class="">too few labels line up with detected major ticks</td></tr>
+<tr><td class="">hygrometer</td><td class="num">3</td><td class="num">2</td><td class="num">2</td><td class="num">3</td><td class="num">93.9</td><td class="">labelled values are not evenly spaced along the ticks</td></tr>
+<tr><td class="">barometer</td><td class="num">3</td><td class="num">1</td><td class="num">1</td><td class="num">3</td><td class="num">60.6</td><td class="">too few labels line up with detected major ticks</td></tr>
+<tr><td class="">oven_thermometer</td><td class="num">3</td><td class="num">1</td><td class="num">1</td><td class="num">1</td><td class="num">61.1</td><td class="">too few labels line up with detected major ticks</td></tr>
+<tr><td class="">vacuum_gauge</td><td class="num">3</td><td class="num">2</td><td class="num">2</td><td class="num">2</td><td class="num">66.7</td><td class="">scale type &#x27;nonlinear&#x27; is out of scope</td></tr>
+<tr><td class="">voltmeter</td><td class="num">3</td><td class="num">2</td><td class="num">2</td><td class="num">3</td><td class="num">81</td><td class="">labelled values are not evenly spaced along the ticks</td></tr>
+<tr><td class="">speedometer</td><td class="num">3</td><td class="num">3</td><td class="num">3</td><td class="num">3</td><td class="num">100</td><td class=""></td></tr>
+<tr><td class="">megohmmeter</td><td class="num">3</td><td class="num">1</td><td class="num">1</td><td class="num">3</td><td class="num">66.7</td><td class="">label values are not monotonic along the scale; too few labels line up with detected major ticks</td></tr>
+</tbody></table></div>
+<div class="callout"><b>Result: it replaces manual entry without loss.</b> Validation accepted
+19 of 33 parses, and none of the accepted ones was wrong.
+All 11 of 11 gauge types got a validated scale from at least
+one photo, and readings with the parsed scale are identical to readings with the hand-entered scale (rows C0 and C1).
+The check is strict: the VLM's own answer was right in 30 of 33 cases, so
+validation also turned away correct parses, mostly because the label positions the VLM reports are too rough to match
+ticks (mean label-to-tick match rate 75%). A rejected parse costs one more
+attempt or a hand entry; an accepted wrong parse would cost a wrong reading. Cost: one call per gauge type, not per photo.</div>
+<h3>Hook 2 and E4: does the sentinel add anything beyond Stage 8?</h3>
+<figure><a href="figures/e4_risk_coverage.png"><img src="figures/e4_risk_coverage.png" alt="Risk against coverage: photos are answered in order of confidence. Lower and further right is better." loading="lazy"></a><figcaption>Risk against coverage: photos are answered in order of confidence. Lower and further right is better.</figcaption></figure>
+<div class="tablewrap"><table>
+<thead><tr><th class="">data</th><th class="num">images with both readings</th><th class="num">classical gross errors</th><th class="num">gross errors flagged by sentinel</th><th class="num">recall %</th><th class="num">gross errors Stage 8 had missed</th><th class="num">of those, caught by sentinel</th><th class="num">false alarms on correct readings %</th><th class="num">VLM alone mean error (% FS)</th></tr></thead><tbody>
+<tr><td class="">Test split</td><td class="num">178</td><td class="num">1</td><td class="num">1</td><td class="num">100</td><td class="num">0</td><td class="num">0</td><td class="num">3.47</td><td class="num">1.84</td></tr>
+<tr><td class="">Stress set</td><td class="num">164</td><td class="num">10</td><td class="num">10</td><td class="num">100</td><td class="num">0</td><td class="num">0</td><td class="num">29.33</td><td class="num">14.61</td></tr>
+</tbody></table></div>
+<div class="callout neg"><b>Result: no benefit on this data. Reported as a negative result.</b>
+The sentinel threshold, set on the validation split, is 6.5% of full scale. The
+sentinel flagged 1 of 1 classical gross errors on
+the test split and 10 of 10 on the stress set. But
+Stage 8 had already flagged every one of them: the number of gross errors it had missed was
+0 and 0. So the sentinel had nothing left to
+catch, and its false alarms (3.5% of correct readings on the test split,
+29.3% on the stress set, where the VLM itself is degraded) only removed good
+readings. By the plan's suggested criterion (flag at least half the gross errors with under 10% false alarms) it
+passes on the test split and fails on the stress set; by the stricter question of E4, whether it adds anything beyond
+Stage 8, it does not. It could still earn its place on data where geometry is confidently wrong, such as a wrong
+hand-entered scale; that was not tested.</div>
+<h3>Hook 3: repair loop</h3>
+<div class="tablewrap"><table>
+<caption>Fixed = reliable after repair and within 2% of full scale. Equal compute means at most two pipeline reruns; the grid search uses five.</caption>
+<thead><tr><th class="">data</th><th class="">method</th><th class="num">flagged images</th><th class="num">fixed (reliable and correct)</th><th class="num">fixed %</th><th class="num">made reliable but wrong</th><th class="num">pipeline reruns per image</th><th class="num">VLM calls per image</th></tr></thead><tbody>
+<tr><td class="">Test split</td><td class="">No repair</td><td class="num">25</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">Test split</td><td class="">Hook 3: VLM picks the action (at most 2 reruns)</td><td class="num">25</td><td class="num">3</td><td class="num">12</td><td class="num">0</td><td class="num">1.88</td><td class="num">1.88</td></tr>
+<tr><td class="">Test split</td><td class="">Rule-based, fixed order (at most 2 reruns)</td><td class="num">25</td><td class="num">3</td><td class="num">12</td><td class="num">0</td><td class="num">1.96</td><td class="num">0</td></tr>
+<tr><td class="">Test split</td><td class="">Grid search over all actions (5 reruns)</td><td class="num">25</td><td class="num">3</td><td class="num">12</td><td class="num">1</td><td class="num">5</td><td class="num">0</td></tr>
+<tr><td class="">Stress set</td><td class="">No repair</td><td class="num">84</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td class="">Stress set</td><td class="">Hook 3: VLM picks the action (at most 2 reruns)</td><td class="num">84</td><td class="num">4</td><td class="num">4.76</td><td class="num">1</td><td class="num">1.98</td><td class="num">1.98</td></tr>
+<tr><td class="">Stress set</td><td class="">Rule-based, fixed order (at most 2 reruns)</td><td class="num">84</td><td class="num">3</td><td class="num">3.57</td><td class="num">0</td><td class="num">2</td><td class="num">0</td></tr>
+<tr><td class="">Stress set</td><td class="">Grid search over all actions (5 reruns)</td><td class="num">84</td><td class="num">4</td><td class="num">4.76</td><td class="num">3</td><td class="num">5</td><td class="num">0</td></tr>
+</tbody></table></div>
+<div class="callout neg"><b>Result: it does not beat the rule-based fallback. Reported as a negative result.</b>
+On the test split the VLM-guided loop fixed 3 of
+25 flagged photos and the fixed-order rule fixed
+3. On the stress set it fixed
+4 of 84 against
+3, and made
+1 photo reliable but wrong. The paired bootstrap against the rule finds
+no measurable effect. Most flagged photos have the
+needle or the ticks hidden by glare or destroyed by the degradation, and no action on the menu can bring that back.
+The success criterion written down before the test (more fixes than the rule at equal compute) is not met.</div>
+<h3>Cost and logging</h3><p>All VLM calls for this project, the hook experiments, the VLM-alone baselines
+and the MeasureBench run, cost $0.42 in total (1013 calls). Hook 1
+runs once per gauge type, hook 2 once per photo and hook 3 only on flagged photos. Every call is cached on disk and
+logged with its prompt, output, token counts, cost and validation result in <code>logs/vlm_calls.jsonl</code>.</p>
+<h2 id="e5">E5: does it generalise to unseen gauge types?</h2>
+<figure><a href="figures/e5_generalisation.png"><img src="figures/e5_generalisation.png" alt="Mean error per gauge type on clean test photos. Orange: types never used when tuning thresholds." loading="lazy"></a><figcaption>Mean error per gauge type on clean test photos. Orange: types never used when tuning thresholds.</figcaption></figure>
+<div class="tablewrap"><table>
+<thead><tr><th class="">gauge type</th><th class="">held out</th><th class="num">n</th><th class="num">answered %</th><th class="num">mean error (% FS)</th><th class="">95% CI</th><th class="num">90th pct</th><th class="num">gross error % (&gt;10% FS)</th><th class="num">within 1 division %</th><th class="num">coverage % (reliable)</th></tr></thead><tbody>
+<tr><td class="">pressure_gauge</td><td class="">no</td><td class="num">6</td><td class="num">100</td><td class="num">0.026</td><td class="">[0.006, 0.061]</td><td class="num">0.064</td><td class="num">0</td><td class="num">100</td><td class="num">83.33</td></tr>
+<tr><td class="">tyre_gauge</td><td class="">no</td><td class="num">6</td><td class="num">100</td><td class="num">0.015</td><td class="">[0.006, 0.026]</td><td class="num">0.031</td><td class="num">0</td><td class="num">100</td><td class="num">100</td></tr>
+<tr><td class="">kitchen_scale</td><td class="">no</td><td class="num">6</td><td class="num">100</td><td class="num">0.008</td><td class="">[0.003, 0.014]</td><td class="num">0.016</td><td class="num">0</td><td class="num">100</td><td class="num">100</td></tr>
+<tr><td class="">thermometer</td><td class="">no</td><td class="num">6</td><td class="num">100</td><td class="num">0.014</td><td class="">[0.005, 0.023]</td><td class="num">0.028</td><td class="num">0</td><td class="num">100</td><td class="num">100</td></tr>
+<tr><td class="">hygrometer</td><td class="">no</td><td class="num">6</td><td class="num">100</td><td class="num">0.019</td><td class="">[0.010, 0.030]</td><td class="num">0.036</td><td class="num">0</td><td class="num">100</td><td class="num">100</td></tr>
+<tr><td class="">barometer</td><td class="">yes</td><td class="num">10</td><td class="num">100</td><td class="num">0.011</td><td class="">[0.008, 0.014]</td><td class="num">0.015</td><td class="num">0</td><td class="num">100</td><td class="num">100</td></tr>
+<tr><td class="">oven_thermometer</td><td class="">no</td><td class="num">6</td><td class="num">100</td><td class="num">0.029</td><td class="">[0.019, 0.039]</td><td class="num">0.043</td><td class="num">0</td><td class="num">100</td><td class="num">100</td></tr>
+<tr><td class="">vacuum_gauge</td><td class="">no</td><td class="num">6</td><td class="num">100</td><td class="num">0.01</td><td class="">[0.004, 0.020]</td><td class="num">0.021</td><td class="num">0</td><td class="num">100</td><td class="num">100</td></tr>
+<tr><td class="">voltmeter</td><td class="">no</td><td class="num">6</td><td class="num">100</td><td class="num">0.017</td><td class="">[0.010, 0.025]</td><td class="num">0.029</td><td class="num">0</td><td class="num">100</td><td class="num">100</td></tr>
+<tr><td class="">speedometer</td><td class="">yes</td><td class="num">10</td><td class="num">100</td><td class="num">0.023</td><td class="">[0.013, 0.035]</td><td class="num">0.052</td><td class="num">0</td><td class="num">100</td><td class="num">100</td></tr>
+<tr><td class="">megohmmeter</td><td class="">no</td><td class="num">6</td><td class="num">100</td><td class="num">0.01</td><td class="">[0.006, 0.016]</td><td class="num">0.017</td><td class="num">0</td><td class="num">100</td><td class="num">100</td></tr>
+<tr class="hl"><td class="">ALL SEEN TYPES</td><td class="">no</td><td class="num">54</td><td class="num">100</td><td class="num">0.016</td><td class="">[0.012, 0.022]</td><td class="num">0.038</td><td class="num">0</td><td class="num">100</td><td class="num">98.15</td></tr>
+<tr class="hl"><td class="">ALL HELD-OUT TYPES</td><td class="">yes</td><td class="num">20</td><td class="num">100</td><td class="num">0.017</td><td class="">[0.011, 0.024]</td><td class="num">0.034</td><td class="num">0</td><td class="num">100</td><td class="num">100</td></tr>
+</tbody></table></div>
+<div class="callout"><b>What it shows.</b> The held-out types read as well as the seen ones: mean error
+0.017% of full scale against 0.016%, coverage
+100% against 98%. This is expected of a pipeline that learns
+nothing from the images except thresholds. It is a weak test of generalisation, because the held-out types come from
+the same renderer; E6 is the strong one.</div>
+<h2 id="e6">E6: public real-world photos (MeasureBench)</h2>
+<p>MeasureBench has 711 real dial images, including clocks and multi-needle instruments. 21 single-needle
+circular dials with one scale were picked by hand, and their scale ranges entered by hand from the image. MeasureBench
+counts a reading as correct when it falls inside a valid interval.</p>
+<figure><a href="figures/e6_measurebench.png"><img src="figures/e6_measurebench.png" alt="The 21 photos after Stages 1 to 7. Border: green if the classical reading is inside the valid interval, red if outside or missing. Dot: the pipeline&#x27;s own reliable flag." loading="lazy"></a><figcaption>The 21 photos after Stages 1 to 7. Border: green if the classical reading is inside the valid interval, red if outside or missing. Dot: the pipeline's own reliable flag.</figcaption></figure>
+<div class="tablewrap"><table>
+<thead><tr><th class="">method</th><th class="num">images</th><th class="num">answered %</th><th class="num">interval accuracy % (all images)</th><th class="num">flagged reliable %</th><th class="num">interval accuracy % among reliable</th><th class="num">median distance to interval (% FS), answered</th></tr></thead><tbody>
+<tr><td class="">DialReader classical (C0), scale entered by hand</td><td class="num">21</td><td class="num">90.5</td><td class="num">23.8</td><td class="num">14.3</td><td class="num">66.7</td><td class="num">2.9</td></tr>
+<tr><td class="">VLM alone (anthropic/claude-haiku-5.5)</td><td class="num">21</td><td class="num">100</td><td class="num">61.9</td><td class="num"></td><td class="num"></td><td class="num">0</td></tr>
+<tr><td class="">DialReader with hook 1 (scale parsed by the VLM, validated)</td><td class="num">21</td><td class="num">23.8</td><td class="num">19</td><td class="num"></td><td class="num"></td><td class="num"></td></tr>
+<tr><td class="">Published: best of 18 VLMs, overall accuracy on real images</td><td class="num"></td><td class="num"></td><td class="num">30.2</td><td class="num"></td><td class="num"></td><td class="num"></td></tr>
+<tr><td class="">Published: value accuracy on real images (best model)</td><td class="num"></td><td class="num"></td><td class="num">30.7</td><td class="num"></td><td class="num"></td><td class="num"></td></tr>
+<tr><td class="">Published: Reitsma et al. 2024 pipeline, overall accuracy</td><td class="num"></td><td class="num"></td><td class="num">8.5</td><td class="num"></td><td class="num"></td><td class="num"></td></tr>
+<tr><td class="">Published: Shu et al. 2023 pipeline, value accuracy on real images</td><td class="num"></td><td class="num"></td><td class="num">4.2</td><td class="num"></td><td class="num"></td><td class="num"></td></tr>
+</tbody></table></div>
+<div class="callout neg"><b>Result: the classical pipeline does not transfer to real photos as it stands.</b>
+It put 24% of the 21 photos inside the valid interval. It flagged only
+14% as reliable, and 67% of those were inside the
+interval, so abstention again kept most wrong readings from being presented as measurements. The VLM alone put 62% inside the interval. The published
+figures in the table are for 2025 models on all 26 instrument types with exact-interval scoring, so they are context,
+not a like-for-like comparison. The dial and the needle are usually found; the usual failure is the scale ends: real
+dials have red zones, logos, dual rings, stop pins and counterweighted needles that the synthetic set does not, and
+without a known tick count a misplaced end tick shifts every reading. This is the plan's main risk made concrete:
+earlier special-purpose pipelines also scored low on MeasureBench.</div>
+<details><summary>Per-image results (21 rows)</summary><div class="tablewrap"><table>
+<thead><tr><th class="">image</th><th class="">valid interval</th><th class="">scale entered by hand</th><th class="num">classical reading</th><th class="num">error bar</th><th class="">status</th><th class="num">classical in interval</th><th class="num">VLM alone</th><th class="num">VLM in interval</th><th class="">hook 1 parse</th><th class="">why</th></tr></thead><tbody>
+<tr><td class="">hygrometer_19</td><td class="">33 to 34</td><td class="">20 to 100 %RH</td><td class="num">31.55</td><td class="num">0.452</td><td class="">unreliable</td><td class="num">no</td><td class="num">34</td><td class="num">yes</td><td class="">rejected: scale type &#x27;nonlinear&#x27; is out of scope</td><td class="">many tick marks are missing</td></tr>
+<tr><td class="">hygrometer_20</td><td class="">46 to 47</td><td class="">0 to 100 %RH</td><td class="num">63.82</td><td class="num">3.32</td><td class="">unreliable</td><td class="num">no</td><td class="num">47</td><td class="num">yes</td><td class="">rejected: too few labels line up with detected major ticks</td><td class="">tick spacing from the DFT disagrees with the comb; many tick marks are missing; tick marks</td></tr>
+<tr><td class="">pressure_gauge_0</td><td class="">3 to 3.5</td><td class="">0 to 10 bar</td><td class="num">3.41</td><td class="num">0.513</td><td class="">reliable</td><td class="num">yes</td><td class="num">3.2</td><td class="num">yes</td><td class="">accepted</td><td class=""></td></tr>
+<tr><td class="">pressure_gauge_9</td><td class="">258 to 262</td><td class="">0 to 400 bar</td><td class="num">209.63</td><td class="num">11.05</td><td class="">unreliable</td><td class="num">no</td><td class="num">230</td><td class="num">no</td><td class="">rejected: no major ticks detected</td><td class="">many tick marks are missing; tick marks are faint; needle angle is uncertain</td></tr>
+<tr><td class="">pressure_gauge_19</td><td class="">9.8 to 10.0</td><td class="">0 to 10 kg/cm2</td><td class="num">-2.1</td><td class="num">0.379</td><td class="">unreliable</td><td class="num">no</td><td class="num">9.8</td><td class="num">yes</td><td class="">rejected: too few labels line up with detected major ticks</td><td class="">line fit and Hough line disagree on the needle; needle is outside the scale; needle angle </td></tr>
+<tr><td class="">pressure_gauge_20</td><td class="">10 to 12</td><td class="">0 to 100 psi</td><td class="num">-29.57</td><td class="num">1.38</td><td class="">unreliable</td><td class="num">no</td><td class="num">10</td><td class="num">yes</td><td class="">rejected: too few labels line up with detected major ticks</td><td class="">needle is outside the scale; many tick marks are missing; tick marks are not evenly spaced</td></tr>
+<tr><td class="">pressure_gauge_21</td><td class="">47 to 49</td><td class="">0 to 60 psi</td><td class="num">48.8</td><td class="num">0.87</td><td class="">unreliable</td><td class="num">yes</td><td class="num">9.5</td><td class="num">no</td><td class="">rejected: labelled values are not evenly spaced along the ticks</td><td class="">line fit and Hough line disagree on the needle; needle angle is uncertain</td></tr>
+<tr><td class="">pressure_gauge_22</td><td class="">12 to 14</td><td class="">0 to 160 psi</td><td class="num">7.43</td><td class="num">1.11</td><td class="">unreliable</td><td class="num">no</td><td class="num">12</td><td class="num">yes</td><td class="">accepted</td><td class="">tick marks are not evenly spaced; many tick marks are missing</td></tr>
+<tr><td class="">pressure_gauge_30</td><td class="">2 to 5</td><td class="">0 to 100</td><td class="num">75.73</td><td class="num">2.33</td><td class="">unreliable</td><td class="num">no</td><td class="num">70.5</td><td class="num">no</td><td class="">rejected: too few labels line up with detected major ticks</td><td class="">many tick marks are missing</td></tr>
+<tr><td class="">pressure_gauge_36</td><td class="">1.5 to 2</td><td class="">0 to 25 kgf/cm2</td><td class="num">0.707</td><td class="num">0.54</td><td class="">unreliable</td><td class="num">no</td><td class="num">1</td><td class="num">no</td><td class="">rejected: label values are not monotonic along the scale</td><td class="">tick marks are faint</td></tr>
+<tr><td class="">pressure_gauge_38</td><td class="">0.06 to 0.08</td><td class="">0 to 1 MPa</td><td class="num"></td><td class="num"></td><td class="">failed</td><td class="num">no</td><td class="num">0.1</td><td class="num">no</td><td class="">rejected: no ticks</td><td class="">dial face not found</td></tr>
+<tr><td class="">pressure_gauge_41</td><td class="">0.3 to 0.35</td><td class="">0 to 1 kgf/cm2</td><td class="num">0.275</td><td class="num">0.0291</td><td class="">unreliable</td><td class="num">no</td><td class="num">0.35</td><td class="num">yes</td><td class="">accepted</td><td class="">tick marks are faint</td></tr>
+<tr><td class="">pressure_gauge_44</td><td class="">0.55 to 0.6</td><td class="">0 to 1.5 MPa</td><td class="num">0.451</td><td class="num">0.0997</td><td class="">unreliable</td><td class="num">no</td><td class="num">0.55</td><td class="num">yes</td><td class="">rejected: no major ticks detected</td><td class="">line fit and Hough line disagree on the needle; tick spacing from the DFT disagrees with t</td></tr>
+<tr><td class="">pressure_gauge_50</td><td class="">0.044 to 0.046</td><td class="">0 to 0.1 MPa</td><td class="num">0.0447</td><td class="num">0.0012</td><td class="">unreliable</td><td class="num">yes</td><td class="num">0.043</td><td class="num">no</td><td class="">rejected: labelled values are not evenly spaced along the ticks</td><td class="">tick marks are not evenly spaced; tick spacing from the DFT disagrees with the comb</td></tr>
+<tr><td class="">pressure_gauge_55</td><td class="">0.36 to 0.38</td><td class="">0 to 1 MPa</td><td class="num">0.345</td><td class="num">0.0152</td><td class="">unreliable</td><td class="num">no</td><td class="num">0.95</td><td class="num">no</td><td class="">rejected: labelled values are not evenly spaced along the ticks</td><td class="">line fit and Hough line disagree on the needle; needle angle is uncertain</td></tr>
+<tr><td class="">pressure_gauge_56</td><td class="">0.34 to 0.36</td><td class="">0 to 1 MPa</td><td class="num">0.324</td><td class="num">0.0116</td><td class="">reliable</td><td class="num">no</td><td class="num">0.34</td><td class="num">yes</td><td class="">rejected: too few labels line up with detected major ticks</td><td class=""></td></tr>
+<tr><td class="">pressure_gauge_57</td><td class="">0.25 to 0.26</td><td class="">0 to 0.6 MPa</td><td class="num"></td><td class="num"></td><td class="">failed</td><td class="num">no</td><td class="num">0.26</td><td class="num">yes</td><td class="">rejected: no ticks</td><td class="">dial face not found</td></tr>
+<tr><td class="">pressure_gauge_58</td><td class="">11 to 12</td><td class="">0 to 25 MPa</td><td class="num">14.19</td><td class="num">0.45</td><td class="">unreliable</td><td class="num">no</td><td class="num">11.6</td><td class="num">yes</td><td class="">accepted</td><td class="">tick marks are not evenly spaced; many tick marks are missing; tick spacing from the DFT d</td></tr>
+<tr><td class="">pressure_gauge_62</td><td class="">5 to 5.2</td><td class="">0 to 10 kg/cm2</td><td class="num">5.02</td><td class="num">0.113</td><td class="">unreliable</td><td class="num">yes</td><td class="num">5</td><td class="num">yes</td><td class="">rejected: labelled values are not evenly spaced along the ticks</td><td class="">tick marks are not evenly spaced</td></tr>
+<tr><td class="">pressure_gauge_64</td><td class="">0.65 to 0.7</td><td class="">0 to 1.5 MPa</td><td class="num">0.687</td><td class="num">0.0261</td><td class="">reliable</td><td class="num">yes</td><td class="num">1.05</td><td class="num">no</td><td class="">accepted</td><td class=""></td></tr>
+<tr><td class="">pressure_gauge_67</td><td class="">0.14 to 0.15</td><td class="">0 to 0.2 MPa</td><td class="num">0.114</td><td class="num">0.0066</td><td class="">unreliable</td><td class="num">no</td><td class="num">0.145</td><td class="num">yes</td><td class="">rejected: too few labels line up with detected major ticks</td><td class="">tick marks are faint; tick marks are not evenly spaced; tick spacing from the DFT disagree</td></tr>
+</tbody></table></div></details>
+<h2 id="optional">Optional stages 9 to 11</h2>
+<h3>Stage 9: recognise the gauge type and find the gauge</h3>
+<div class="tablewrap"><table>
+<caption>Gauge-type classification on rectified dial faces (11 types). Stage 9 uses its own split, even readings to train and odd to test, because a classifier cannot name a held-out type.</caption>
+<thead><tr><th class="">classifier</th><th class="num">train photos</th><th class="num">test photos</th><th class="num">accuracy % (test photos)</th><th class="num">stress photos</th><th class="num">accuracy % (stress photos)</th></tr></thead><tbody>
+<tr><td class="">HOG + linear SVM</td><td class="num">145</td><td class="num">145</td><td class="num">92.4</td><td class="num">91</td><td class="num">82.4</td></tr>
+<tr><td class="">LBP + SVM</td><td class="num">145</td><td class="num">145</td><td class="num">97.2</td><td class="num">91</td><td class="num">68.1</td></tr>
+<tr><td class="">Bag of Words (SIFT) + SVM</td><td class="num">145</td><td class="num">145</td><td class="num">97.9</td><td class="num">91</td><td class="num">68.1</td></tr>
+</tbody></table></div>
+<figure><a href="figures/stage9_confusion.png"><img src="figures/stage9_confusion.png" alt="Confusion matrices on the stress photos, where the classifiers differ." loading="lazy"></a><figcaption>Confusion matrices on the stress photos, where the classifiers differ.</figcaption></figure>
+<div class="tablewrap"><table>
+<caption>HOG + SVM sliding-window detector</caption>
+<thead><tr><th class="">data</th><th class="num">photos</th><th class="num">average precision</th><th class="num">best box is the gauge % (IoU &gt;= 0.5)</th><th class="num">training positives</th><th class="num">training negatives</th></tr></thead><tbody>
+<tr><td class="">Test photos</td><td class="num">145</td><td class="num">0.99</td><td class="num">100</td><td class="num">290</td><td class="num">886</td></tr>
+<tr><td class="">Stress photos</td><td class="num">91</td><td class="num">0.97</td><td class="num">100</td><td class="num">290</td><td class="num">886</td></tr>
+</tbody></table></div>
+<div class="two"><figure><a href="figures/stage9_detector_pr.png"><img src="figures/stage9_detector_pr.png" alt="Detector precision and recall." loading="lazy"></a><figcaption>Detector precision and recall.</figcaption></figure><figure><a href="figures/week10_hog.png"><img src="figures/week10_hog.png" alt="HOG cells and sliding-window detections." loading="lazy"></a><figcaption>HOG cells and sliding-window detections.</figcaption></figure></div>
+<h3>Stage 10: register to a reference photo, and stitch a panel</h3>
+<figure><a href="figures/stage10_registered.png"><img src="figures/stage10_registered.png" alt="A tilted photo is warped into the frame of a stored frontal reference, so Stages 2 and 3 are skipped." loading="lazy"></a><figcaption>A tilted photo is warped into the frame of a stored frontal reference, so Stages 2 and 3 are skipped.</figcaption></figure>
+<div class="tablewrap"><table>
+<caption>Reading through registration against reading through Stages 2 and 3, on the variation test photos</caption>
+<thead><tr><th class="">condition</th><th class="num">photos</th><th class="num">registered % (&gt;= 15 inliers)</th><th class="num">mean RANSAC inliers</th><th class="num">answered % via registration</th><th class="num">mean error via registration (% FS)</th><th class="num">gross % via registration</th><th class="num">answered % via Stages 2-3</th><th class="num">mean error via Stages 2-3 (% FS)</th><th class="num">gross % via Stages 2-3</th><th class="num">answered % registration with fallback</th><th class="num">mean error with fallback (% FS)</th></tr></thead><tbody>
+<tr><td class="">tilt 0 deg, room light</td><td class="num">18</td><td class="num">100</td><td class="num">64.44</td><td class="num">100</td><td class="num">0.01</td><td class="num">0</td><td class="num">100</td><td class="num">0.01</td><td class="num">0</td><td class="num">100</td><td class="num">0.01</td></tr>
+<tr><td class="">tilt 0 deg, window light</td><td class="num">18</td><td class="num">100</td><td class="num">45.56</td><td class="num">94.44</td><td class="num">0.2</td><td class="num">0</td><td class="num">94.44</td><td class="num">0.18</td><td class="num">0</td><td class="num">94.44</td><td class="num">0.2</td></tr>
+<tr><td class="">tilt 20 deg, room light</td><td class="num">18</td><td class="num">100</td><td class="num">60.56</td><td class="num">100</td><td class="num">0.01</td><td class="num">0</td><td class="num">100</td><td class="num">0.01</td><td class="num">0</td><td class="num">100</td><td class="num">0.01</td></tr>
+<tr><td class="">tilt 20 deg, window light</td><td class="num">18</td><td class="num">100</td><td class="num">42.39</td><td class="num">83.33</td><td class="num">3</td><td class="num">6.67</td><td class="num">88.89</td><td class="num">2.88</td><td class="num">6.25</td><td class="num">88.89</td><td class="num">2.81</td></tr>
+<tr><td class="">tilt 40 deg, room light</td><td class="num">18</td><td class="num">100</td><td class="num">34.5</td><td class="num">100</td><td class="num">0.02</td><td class="num">0</td><td class="num">100</td><td class="num">0.2</td><td class="num">0</td><td class="num">100</td><td class="num">0.02</td></tr>
+<tr><td class="">tilt 40 deg, window light</td><td class="num">18</td><td class="num">77.78</td><td class="num">24.89</td><td class="num">72.22</td><td class="num">0.04</td><td class="num">0</td><td class="num">94.44</td><td class="num">0.34</td><td class="num">0</td><td class="num">94.44</td><td class="num">0.03</td></tr>
+<tr><td class="">all</td><td class="num">108</td><td class="num">96.3</td><td class="num">45.39</td><td class="num">91.67</td><td class="num">0.5</td><td class="num">1.01</td><td class="num">96.3</td><td class="num">0.57</td><td class="num">0.96</td><td class="num">96.3</td><td class="num">0.48</td></tr>
+</tbody></table></div>
+<figure><a href="figures/week12_stitching.png"><img src="figures/week12_stitching.png" alt="Two overlapping photos of a three-gauge panel stitched into one; each gauge is found by the HOG detector and read." loading="lazy"></a><figcaption>Two overlapping photos of a three-gauge panel stitched into one; each gauge is found by the HOG detector and read.</figcaption></figure>
+<div class="tablewrap"><table>
+<caption>Readings from the stitched panel</caption>
+<thead><tr><th class="">gauge</th><th class="num">true</th><th class="num">read</th><th class="">status</th><th class="num">error % FS</th></tr></thead><tbody>
+<tr><td class="">pressure_gauge</td><td class="num">6.4</td><td class="num">6.4</td><td class="">reliable</td><td class="num">0.002</td></tr>
+<tr><td class="">thermometer</td><td class="num">37</td><td class="num">37.02</td><td class="">reliable</td><td class="num">0.011</td></tr>
+<tr><td class="">tyre_gauge</td><td class="num">22</td><td class="num">22</td><td class="">reliable</td><td class="num">0.002</td></tr>
+</tbody></table></div>
+<h3>Stage 11: compression for upload</h3>
+<figure><a href="figures/stage11_compression.png"><img src="figures/stage11_compression.png" alt="Left: readings that stay within one division. Middle: PSNR against compression ratio. The hand-written codec tracks the library encoder." loading="lazy"></a><figcaption>Left: readings that stay within one division. Middle: PSNR against compression ratio. The hand-written codec tracks the library encoder.</figcaption></figure>
+<div class="tablewrap"><table>
+<thead><tr><th class="num">quality factor</th><th class="num">photos</th><th class="num">own codec: compression ratio</th><th class="num">own codec: PSNR (dB)</th><th class="num">own codec: read within 1 division %</th><th class="num">own codec: mean error (% FS)</th><th class="num">library JPEG: compression ratio</th><th class="num">library JPEG: PSNR (dB)</th><th class="num">library JPEG: read within 1 division %</th><th class="num">library JPEG: mean error (% FS)</th></tr></thead><tbody>
+<tr><td class="num">90</td><td class="num">37</td><td class="num">20.76</td><td class="num">44.89</td><td class="num">100</td><td class="num">0.01</td><td class="num">20.62</td><td class="num">47.73</td><td class="num">100</td><td class="num">0.02</td></tr>
+<tr><td class="num">70</td><td class="num">37</td><td class="num">48.22</td><td class="num">41.09</td><td class="num">100</td><td class="num">0.02</td><td class="num">48.79</td><td class="num">41.62</td><td class="num">100</td><td class="num">0.02</td></tr>
+<tr><td class="num">50</td><td class="num">37</td><td class="num">78.23</td><td class="num">39.91</td><td class="num">100</td><td class="num">0.01</td><td class="num">80.28</td><td class="num">39.73</td><td class="num">100</td><td class="num">0.02</td></tr>
+<tr><td class="num">30</td><td class="num">37</td><td class="num">103.03</td><td class="num">38.01</td><td class="num">100</td><td class="num">0.02</td><td class="num">100.99</td><td class="num">37.91</td><td class="num">100</td><td class="num">0.02</td></tr>
+<tr><td class="num">20</td><td class="num">37</td><td class="num">120.15</td><td class="num">36.16</td><td class="num">100</td><td class="num">0.02</td><td class="num">113.39</td><td class="num">35.89</td><td class="num">100</td><td class="num">0.03</td></tr>
+<tr><td class="num">10</td><td class="num">37</td><td class="num">151.14</td><td class="num">32.29</td><td class="num">100</td><td class="num">0.03</td><td class="num">133.25</td><td class="num">32.1</td><td class="num">100</td><td class="num">0.05</td></tr>
+<tr><td class="num">5</td><td class="num">37</td><td class="num">183.05</td><td class="num">26.74</td><td class="num">81.08</td><td class="num">10.69</td><td class="num">151.14</td><td class="num">26.83</td><td class="num">75.68</td><td class="num">5.27</td></tr>
+<tr><td class="num">2</td><td class="num">37</td><td class="num">209.9</td><td class="num">24.29</td><td class="num">56.76</td><td class="num">11.04</td><td class="num">165.07</td><td class="num">24.19</td><td class="num">54.05</td><td class="num">10.89</td></tr>
+</tbody></table></div>
+<div class="callout"><b>What it shows.</b> The lowest library JPEG quality at which at least 95% of
+readings stay within one division is <b>10</b>, a compression ratio of about
+133:1 on these photos at 32.1 dB. Synthetic
+photos are smooth and compress more easily than real ones, so treat the ratio as optimistic.</div>
+<h3>Stage 1 study: noise and blur (week 5)</h3>
+<div class="tablewrap"><table>
+<caption>Known blur and noise added to clean validation photos</caption>
+<thead><tr><th class="">degradation</th><th class="num">photos</th><th class="num">PSNR degraded (dB)</th><th class="num">PSNR after Stage 1 (dB)</th><th class="num">read within 1 division %, Stage 1 on</th><th class="num">read within 1 division %, Stage 1 off</th><th class="">steps applied</th></tr></thead><tbody>
+<tr><td class="">clean</td><td class="num">36</td><td class="num"></td><td class="num">36.5</td><td class="num">100</td><td class="num">100</td><td class="">sharpen x36, contrast x8</td></tr>
+<tr><td class="">Gaussian blur 2 px</td><td class="num">36</td><td class="num">31.3</td><td class="num">34.2</td><td class="num">100</td><td class="num">100</td><td class="">deblur x36, contrast x9</td></tr>
+<tr><td class="">Gaussian blur 4 px</td><td class="num">36</td><td class="num">27</td><td class="num">28.3</td><td class="num">100</td><td class="num">77.8</td><td class="">deblur x36, contrast x10</td></tr>
+<tr><td class="">motion blur 13 px</td><td class="num">36</td><td class="num">28.4</td><td class="num">27.9</td><td class="num">94.4</td><td class="num">63.9</td><td class="">deblur x35, contrast x7, sharpen x1</td></tr>
+<tr><td class="">Gaussian noise 20</td><td class="num">36</td><td class="num">22.3</td><td class="num">28.1</td><td class="num">100</td><td class="num">100</td><td class="">denoise x36, contrast x10</td></tr>
+<tr><td class="">salt-and-pepper 6%</td><td class="num">36</td><td class="num">17.3</td><td class="num">34.1</td><td class="num">100</td><td class="num">83.3</td><td class="">denoise x36, contrast x9</td></tr>
+<tr><td class="">blur 2 px + noise 12</td><td class="num">36</td><td class="num">25.3</td><td class="num">27.4</td><td class="num">100</td><td class="num">97.2</td><td class="">denoise x36, contrast x10</td></tr>
+</tbody></table></div>
+<div class="callout note"><b>A finding against the plan.</b> The plan chooses the deblurring kernel by the highest
+variance of the Laplacian. On a photo blurred with sigma = 2, that rule picks <code>gaussian sigma=3.0</code>, which
+takes the photo from 29.5 dB down to 28.2 dB: ringing
+raises the score. The truly best kernel in the bank is <code>gaussian sigma=2.0</code>
+(35.7 dB). Stage 1 instead estimates the blur from the photo's own edges and reaches
+35.8 dB (gaussian sigma=1.98).</div>
+<details><summary>Every kernel in the bank, scored on that photo (18 rows)</summary><div class="tablewrap"><table>
+<thead><tr><th class="">kernel</th><th class="num">variance of Laplacian</th><th class="num">gradient L1/L2</th><th class="num">PSNR vs sharp photo (dB)</th><th class="">chosen by</th></tr></thead><tbody>
+<tr><td class="">none (input)</td><td class="num">70.58</td><td class="num">0.286</td><td class="num">29.5</td><td class=""></td></tr>
+<tr><td class="">gaussian sigma=1.0</td><td class="num">233.14</td><td class="num">0.461</td><td class="num">30.4</td><td class=""></td></tr>
+<tr><td class="">gaussian sigma=1.5</td><td class="num">259.75</td><td class="num">0.388</td><td class="num">32.48</td><td class=""></td></tr>
+<tr><td class="">gaussian sigma=2.0</td><td class="num">551.56</td><td class="num">0.334</td><td class="num">35.69</td><td class=""> best PSNR (truth)</td></tr>
+<tr><td class="">gaussian sigma=3.0</td><td class="num">1604.37</td><td class="num">0.312</td><td class="num">28.19</td><td class="">highest Laplacian variance</td></tr>
+<tr><td class="">motion len=7 angle=0</td><td class="num">462.1</td><td class="num">0.515</td><td class="num">29.83</td><td class=""></td></tr>
+<tr><td class="">motion len=7 angle=45</td><td class="num">512.27</td><td class="num">0.495</td><td class="num">29.82</td><td class=""></td></tr>
+<tr><td class="">motion len=7 angle=90</td><td class="num">505.91</td><td class="num">0.506</td><td class="num">29.94</td><td class=""></td></tr>
+<tr><td class="">motion len=7 angle=135</td><td class="num">468.04</td><td class="num">0.503</td><td class="num">29.89</td><td class=""></td></tr>
+<tr><td class="">motion len=11 angle=0</td><td class="num">972</td><td class="num">0.516</td><td class="num">24.1</td><td class=""></td></tr>
+<tr><td class="">motion len=11 angle=45</td><td class="num">1140.97</td><td class="num">0.51</td><td class="num">22.04</td><td class=""></td></tr>
+<tr><td class="">motion len=11 angle=90</td><td class="num">1115.08</td><td class="num">0.508</td><td class="num">23.24</td><td class=""></td></tr>
+<tr><td class="">motion len=11 angle=135</td><td class="num">1039.55</td><td class="num">0.525</td><td class="num">22.68</td><td class=""></td></tr>
+<tr><td class="">motion len=15 angle=0</td><td class="num">1167.73</td><td class="num">0.502</td><td class="num">21.36</td><td class=""></td></tr>
+<tr><td class="">motion len=15 angle=45</td><td class="num">1276.87</td><td class="num">0.498</td><td class="num">20.11</td><td class=""></td></tr>
+<tr><td class="">motion len=15 angle=90</td><td class="num">1232.04</td><td class="num">0.492</td><td class="num">20.86</td><td class=""></td></tr>
+<tr><td class="">motion len=15 angle=135</td><td class="num">1153.05</td><td class="num">0.509</td><td class="num">20.86</td><td class=""></td></tr>
+<tr><td class="">edge-based estimate: gaussian sigma=1.98</td><td class="num"></td><td class="num"></td><td class="num">35.75</td><td class="">used by Stage 1</td></tr>
+</tbody></table></div></details>
+<h3>Stage 8 thresholds</h3>
+<div class="tablewrap"><table>
+<caption>Each threshold sits just outside the range that correct validation readings occupy</caption>
+<thead><tr><th class="">signal</th><th class="">meaning when crossed</th><th class="">worse when</th><th class="num">default</th><th class="num">tuned on validation</th></tr></thead><tbody>
+<tr><td class="">needle_spread</td><td class="">needle angle is uncertain</td><td class="">larger</td><td class="num">1</td><td class="num">1.08</td></tr>
+<tr><td class="">method_gap</td><td class="">line fit and Hough line disagree on the needle</td><td class="">larger</td><td class="num">1.5</td><td class="num">0.552</td></tr>
+<tr><td class="">rim_support</td><td class="">dial rim only partly found</td><td class="">smaller</td><td class="num">0.55</td><td class="num">0.408</td></tr>
+<tr><td class="">rim_residual</td><td class="">dial rim does not fit an ellipse well</td><td class="">larger</td><td class="num">1.2</td><td class="num">1.18</td></tr>
+<tr><td class="">comb_residual</td><td class="">tick marks are not evenly spaced</td><td class="">larger</td><td class="num">0.12</td><td class="num">0.081</td></tr>
+<tr><td class="">comb_missing</td><td class="">many tick marks are missing</td><td class="">larger</td><td class="num">0.15</td><td class="num">0.071</td></tr>
+<tr><td class="">dft_gap</td><td class="">tick spacing from the DFT disagrees with the comb</td><td class="">larger</td><td class="num">0.06</td><td class="num">0.015</td></tr>
+<tr><td class="">tick_snr</td><td class="">tick marks are faint</td><td class="">smaller</td><td class="num">6</td><td class="num">11.65</td></tr>
+<tr><td class="">glare_overlap</td><td class="">glare covers the needle</td><td class="">larger</td><td class="num">0.25</td><td class="num">0.588</td></tr>
+<tr><td class="">tick_count</td><td class="">tick count does not match the scale</td><td class="">larger</td><td class="num">0.5</td><td class="num">0.5</td></tr>
+<tr><td class="">out_of_range</td><td class="">needle is outside the scale</td><td class="">larger</td><td class="num">1</td><td class="num">1</td></tr>
+<tr><td class="">sentinel</td><td class="">VLM coarse reading disagrees (gross-error sentinel)</td><td class="">larger</td><td class="num">1</td><td class="num">1</td></tr>
+</tbody></table></div>
+<h2 id="weeks">The 14 lab weeks</h2><p>Each lab program is one module of the project. Click a figure to enlarge it.</p><div class="weeks">
+<div class="week"><h4>Week 1: SciPy and matrix arithmetic</h4><p><code>dialreader/w01_matrix.py</code><br>Rotation, affine and homography matrices, a DLT homography solver, the polar sampling grid.</p><a href="figures/week01_matrix.png"><img src="figures/week01_matrix.png" alt="week 1" loading="lazy"></a></div>
+<div class="week"><h4>Week 2: Image attributes and negation</h4><p><code>dialreader/w02_attributes.py</code><br>Dataset loader, image attributes, histograms, and the negative that turns a dark dial face into a light one.</p><a href="figures/week02_attributes.png"><img src="figures/week02_attributes.png" alt="week 2" loading="lazy"></a></div>
+<div class="week"><h4>Week 3: 2D and 3D transformations</h4><p><code>dialreader/w03_geometry.py</code><br>Stage 3: ellipse to circle (affine), a circle-preserving homography, and a four-corner homography.</p><a href="figures/week03_rectify.png"><img src="figures/week03_rectify.png" alt="week 3" loading="lazy"></a></div>
+<div class="week"><h4>Week 4: Enhancement with filters and histograms</h4><p><code>dialreader/w04_enhance.py</code><br>Stage 1 contrast: histogram equalisation written out, CLAHE, smoothing and sharpening.</p><a href="figures/week04_histograms.png"><img src="figures/week04_histograms.png" alt="week 4" loading="lazy"></a></div>
+<div class="week"><h4>Week 5: Linear and non-linear filters</h4><p><code>dialreader/w05_restore.py</code><br>Stage 1: Gaussian and median denoising, Wiener deblurring, blur kernel from the cepstrum, glare mask.</p><a href="figures/week05_restoration.png"><img src="figures/week05_restoration.png" alt="week 5" loading="lazy"></a></div>
+<div class="week"><h4>Week 6: Image segmentation</h4><p><code>dialreader/w06_segment.py</code><br>Otsu thresholding written out and region growing: the needle mask and the glare mask.</p><a href="figures/week06_segmentation.png"><img src="figures/week06_segmentation.png" alt="week 6" loading="lazy"></a></div>
+<div class="week"><h4>Week 7: Image compression</h4><p><code>dialreader/w07_compress.py</code><br>Stage 11: 8x8 DCT, quantisation, zigzag, run-length and Huffman coding, against library JPEG.</p><a href="figures/week07_compression.png"><img src="figures/week07_compression.png" alt="week 7" loading="lazy"></a></div>
+<div class="week"><h4>Week 8: Morphological opening and closing</h4><p><code>dialreader/w08_morphology.py</code><br>Mask cleanup, black-hat tick extraction and the morphological skeleton of the needle.</p><a href="figures/week08_morphology.png"><img src="figures/week08_morphology.png" alt="week 8" loading="lazy"></a></div>
+<div class="week"><h4>Week 9: Canny edge detection</h4><p><code>dialreader/w09_detect.py</code><br>Canny step by step, Hough circle, RANSAC ellipse, tick DFT and comb, Hough line: classical v1.</p><a href="figures/week09_detectors.png"><img src="figures/week09_detectors.png" alt="week 9" loading="lazy"></a></div>
+<div class="week"><h4>Week 10: HOG</h4><p><code>dialreader/w10_hog.py</code><br>Stage 9: HOG written out, a linear SVM and a sliding window find the gauge in a cluttered scene.</p><a href="figures/week10_hog.png"><img src="figures/week10_hog.png" alt="week 10" loading="lazy"></a></div>
+<div class="week"><h4>Week 11: SIFT interest points</h4><p><code>dialreader/w11_sift.py</code><br>Stage 10: SIFT matches with the ratio test, between a new photo and a stored reference.</p><a href="figures/week11_sift.png"><img src="figures/week11_sift.png" alt="week 11" loading="lazy"></a></div>
+<div class="week"><h4>Week 12: Image stitching panorama</h4><p><code>dialreader/w12_stitch.py</code><br>RANSAC homography and feathered blending join two photos of a three-gauge panel.</p><a href="figures/week12_stitching.png"><img src="figures/week12_stitching.png" alt="week 12" loading="lazy"></a></div>
+<div class="week"><h4>Week 13: LBP</h4><p><code>dialreader/w13_lbp.py</code><br>Stage 9: uniform local binary patterns over a grid of cells classify the gauge type.</p><a href="figures/week13_lbp.png"><img src="figures/week13_lbp.png" alt="week 13" loading="lazy"></a></div>
+<div class="week"><h4>Week 14: Image classification with Bag of Words</h4><p><code>dialreader/w14_bow.py</code><br>Stage 9: k-means visual words on SIFT descriptors, word histograms and an SVM.</p><a href="figures/week14_bow.png"><img src="figures/week14_bow.png" alt="week 14" loading="lazy"></a></div>
+</div>
+<h2 id="limits">Negative results, limits and changes from the plan</h2>
+<h3>What did not work</h3><ul>
+<li>Hook 2 (sentinel) added false alarms and caught nothing Stage 8 had not already caught.</li>
+<li>Hook 3 (repair loop) did not measurably beat a fixed-order rule: 3 against
+3 photos fixed on the test split and 4 against
+3 on the stress set, at about two VLM calls per flagged photo.</li>
+<li>On real MeasureBench photos the classical pipeline was right on few and abstained on most.</li>
+<li>The plan's rule for choosing a deblurring kernel (highest variance of the Laplacian) picks over-sharpened, ringing results.</li>
+</ul>
+<h3>Limits of the evidence</h3><ul>
+<li><b>No hand-collected photos yet.</b> All in-scope numbers are on rendered dials. The folder and CSV format for real photos are ready.</li>
+<li><b>The MeasureBench sample is small</b> (21 photos, picked and labelled by one reader), so its percentages move in steps of about 5 points.</li>
+<li><b>The test split was not touched only once.</b> Two fixes were made after first seeing test-side results: treating a large clipped region as over-exposure rather than glare (found in E2, checked on the validation split, then E2 rerun), and making the LBP codes tolerant of noise (found in Stage 9). All tables here are from the final code.</li>
+<li><b>One VLM, one run.</b> Hook results are for one model at low reasoning effort. A different model could change the hook 2 and hook 3 verdicts.</li>
+<li><b>Scope.</b> Single-needle circular dials with one scale. Full-circle scales, dual scales, semi-circular and multi-needle instruments are out of scope; hook 1 rejects the scale types it reports as unsupported.</li>
+<li><b>Not for safety-critical decisions.</b> Always read the error bar and the reliability flag.</li>
+</ul>
+<h3>Changes from the plan, and why</h3><ul>
+<li><b>Blur kernel:</b> estimated from the image instead of chosen by sharpness score. Gaussian blur from the gradient loss at strong edges under re-blurring; motion blur from the cepstrum, which is the plan's "pattern of zeros in the DFT" turned into a measurement.</li>
+<li><b>Tilt:</b> the affine ellipse-to-circle map leaves the true centre displaced under perspective. The Stage 4 centre search applies each candidate as a circle-preserving homography, which removes that residual and is what makes 40 degree tilt readable.</li>
+<li><b>Canny thresholds</b> are taken from each photo's gradient distribution, after fixed thresholds lost low-contrast rims.</li>
+<li><b>Order:</b> the needle is located before the comb fit, so the needle is not counted as a tick.</li>
+<li><b>Ellipse RANSAC</b> draws each sample from one edge contour, because a bezel gives several concentric rings.</li>
+<li><b>Error metric</b> is capped at 100% of full scale, so one wildly extrapolated reading cannot dominate a mean.</li>
+<li><b>Stress set</b> added, because the clean test split has almost no gross errors for the hooks to act on.</li>
+</ul>
+<h2 id="run">How to run</h2>
+<p><code>streamlit run app.py</code> opens the demo: pick or upload a photo, see every stage, and get the reading with its
+error bar and flag. <code>python -m pytest tests -q</code> runs the unit tests. <code>python experiments/run_all.py</code>
+regenerates every table and figure here; add <code>--genai</code> to rerun the hook experiments (needs a key in
+<code>.env</code>). See <code>README.md</code> for the layout.</p></main></body></html>

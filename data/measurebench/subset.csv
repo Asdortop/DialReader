@@ -1,0 +1,22 @@
+question_id,vmin,vmax,unit,note
+hygrometer_19,20,100,%RH,
+hygrometer_20,0,100,%RH,
+pressure_gauge_0,0,10,bar,
+pressure_gauge_9,0,400,bar,
+pressure_gauge_19,0,10,kg/cm2,needle at the end of the scale
+pressure_gauge_20,0,100,psi,strong tilt
+pressure_gauge_21,0,60,psi,dial small in the frame
+pressure_gauge_22,0,160,psi,scale starts at the top right
+pressure_gauge_30,0,100,,needle resting near zero
+pressure_gauge_36,0,25,kgf/cm2,
+pressure_gauge_38,0,1,MPa,dial small in the frame
+pressure_gauge_41,0,1,kgf/cm2,
+pressure_gauge_44,0,1.5,MPa,
+pressure_gauge_50,0,0.1,MPa,dial cropped by the frame
+pressure_gauge_55,0,1,MPa,dial small in the frame
+pressure_gauge_56,0,1,MPa,
+pressure_gauge_57,0,0.6,MPa,dial small in the frame
+pressure_gauge_58,0,25,MPa,
+pressure_gauge_62,0,10,kg/cm2,
+pressure_gauge_64,0,1.5,MPa,
+pressure_gauge_67,0,0.2,MPa,

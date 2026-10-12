@@ -1,0 +1,8 @@
+degradation,photos,PSNR degraded (dB),PSNR after Stage 1 (dB),"read within 1 division %, Stage 1 on","read within 1 division %, Stage 1 off",steps applied
+clean,36,,36.5,100.0,100.0,"sharpen x36, contrast x8"
+Gaussian blur 2 px,36,31.3,34.2,100.0,100.0,"deblur x36, contrast x9"
+Gaussian blur 4 px,36,27.0,28.3,100.0,77.8,"deblur x36, contrast x10"
+motion blur 13 px,36,28.4,27.9,94.4,63.9,"deblur x35, contrast x7, sharpen x1"
+Gaussian noise 20,36,22.3,28.1,100.0,100.0,"denoise x36, contrast x10"
+salt-and-pepper 6%,36,17.3,34.1,100.0,83.3,"denoise x36, contrast x9"
+blur 2 px + noise 12,36,25.3,27.4,100.0,97.2,"denoise x36, contrast x10"

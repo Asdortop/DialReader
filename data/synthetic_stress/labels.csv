@@ -1,0 +1,183 @@
+file,set,split,gauge,held_out,reading,value,unit,vmin,vmax,scale_type,direction,n_ticks,half_division,start_deg,sweep_deg,tilt_deg,lighting,phone,glare_frac,seed,cx,cy,r_px,stress
+images/base_pressure_gauge_r01_free_room.jpg,stress,test,pressure_gauge,0,1,6.315184,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,4.09,room,B,0.0,1,344.4,455.2,284.3,gaussian blur 5 px
+images/base_pressure_gauge_r02_free_room.jpg,stress,test,pressure_gauge,0,2,4.692323,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,2.09,room,A,0.0,2,526.2,410.6,222.6,motion blur 21 px
+images/base_pressure_gauge_r04_free_room.jpg,stress,test,pressure_gauge,0,4,3.636223,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,7.54,room,A,0.0,4,529.7,332.4,221.8,gaussian noise 40
+images/base_pressure_gauge_r05_free_room.jpg,stress,test,pressure_gauge,0,5,7.730872,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,6.44,room,B,0.0,5,275.2,429.8,236.6,JPEG quality 5
+images/base_pressure_gauge_r07_free_room.jpg,stress,test,pressure_gauge,0,7,1.96712,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,5.0,room,B,0.0,7,320.1,644.3,232.2,brightness -110
+images/base_pressure_gauge_r08_free_room.jpg,stress,test,pressure_gauge,0,8,6.436177,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,2.62,room,A,0.0,8,609.1,348.1,272.8,contrast x0.2
+images/base_tyre_gauge_r01_free_room.jpg,stress,test,tyre_gauge,0,1,53.679549,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,4.9,room,B,0.0,1001,318.6,379.0,277.8,salt-and-pepper 20%
+images/base_tyre_gauge_r02_free_room.jpg,stress,test,tyre_gauge,0,2,37.663113,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,3.05,room,A,0.0,1002,412.7,369.5,244.0,blur 3 px + noise 20
+images/base_tyre_gauge_r04_free_room.jpg,stress,test,tyre_gauge,0,4,30.854668,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.01,room,A,0.0,1004,530.1,418.9,243.4,gaussian blur 5 px
+images/base_tyre_gauge_r05_free_room.jpg,stress,test,tyre_gauge,0,5,48.380493,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.66,room,B,0.0,1005,404.6,657.9,262.0,motion blur 21 px
+images/base_tyre_gauge_r07_free_room.jpg,stress,test,tyre_gauge,0,7,20.909022,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.57,room,B,0.0,1007,378.2,655.7,230.2,gaussian noise 40
+images/base_tyre_gauge_r08_free_room.jpg,stress,test,tyre_gauge,0,8,17.473516,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,1.34,room,A,0.0,1008,633.4,386.7,286.8,JPEG quality 5
+images/base_kitchen_scale_r01_free_room.jpg,stress,test,kitchen_scale,0,1,2.175287,kg,0.0,5.0,linear,clockwise,51,0.05,120,300,3.39,room,B,0.0,2001,354.5,427.8,285.3,brightness -110
+images/base_kitchen_scale_r02_free_room.jpg,stress,test,kitchen_scale,0,2,3.266949,kg,0.0,5.0,linear,clockwise,51,0.05,120,300,7.11,room,A,0.0,2002,567.0,286.3,226.9,contrast x0.2
+images/base_kitchen_scale_r04_free_room.jpg,stress,test,kitchen_scale,0,4,2.254199,kg,0.0,5.0,linear,clockwise,51,0.05,120,300,5.12,room,A,0.0,2004,498.1,302.2,263.7,salt-and-pepper 20%
+images/base_kitchen_scale_r05_free_room.jpg,stress,test,kitchen_scale,0,5,1.86635,kg,0.0,5.0,linear,clockwise,51,0.05,120,300,5.74,room,B,0.0,2005,315.8,510.4,280.6,blur 3 px + noise 20
+images/base_kitchen_scale_r07_free_room.jpg,stress,test,kitchen_scale,0,7,2.94587,kg,0.0,5.0,linear,clockwise,51,0.05,120,300,6.08,room,B,0.0,2007,333.0,520.1,263.5,gaussian blur 5 px
+images/base_kitchen_scale_r08_free_room.jpg,stress,test,kitchen_scale,0,8,2.195972,kg,0.0,5.0,linear,clockwise,51,0.05,120,300,7.16,room,A,0.0,2008,363.8,423.0,217.0,motion blur 21 px
+images/base_thermometer_r01_free_room.jpg,stress,test,thermometer,0,1,99.300526,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,7.34,room,B,0.0,3001,307.9,545.9,267.8,gaussian noise 40
+images/base_thermometer_r02_free_room.jpg,stress,test,thermometer,0,2,89.146041,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,1.19,room,A,0.0,3002,341.1,427.2,246.0,JPEG quality 5
+images/base_thermometer_r04_free_room.jpg,stress,test,thermometer,0,4,29.615236,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,6.81,room,A,0.0,3004,387.5,313.5,259.0,brightness -110
+images/base_thermometer_r05_free_room.jpg,stress,test,thermometer,0,5,108.801484,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.77,room,B,0.0,3005,398.9,601.5,267.5,contrast x0.2
+images/base_thermometer_r07_free_room.jpg,stress,test,thermometer,0,7,41.151577,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,3.57,room,B,0.0,3007,343.4,559.1,263.4,salt-and-pepper 20%
+images/base_thermometer_r08_free_room.jpg,stress,test,thermometer,0,8,102.699167,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,6.67,room,A,0.0,3008,326.3,387.9,271.1,blur 3 px + noise 20
+images/base_hygrometer_r01_free_room.jpg,stress,test,hygrometer,0,1,32.499111,%RH,0.0,100.0,linear,clockwise,21,2.5,150,240,0.53,room,B,0.0,4001,246.9,520.6,220.0,gaussian blur 5 px
+images/base_hygrometer_r02_free_room.jpg,stress,test,hygrometer,0,2,27.585986,%RH,0.0,100.0,linear,clockwise,21,2.5,150,240,4.73,room,A,0.0,4002,277.7,306.6,233.8,motion blur 21 px
+images/base_hygrometer_r04_free_room.jpg,stress,test,hygrometer,0,4,24.421846,%RH,0.0,100.0,linear,clockwise,21,2.5,150,240,6.43,room,A,0.0,4004,310.6,354.5,227.4,gaussian noise 40
+images/base_hygrometer_r05_free_room.jpg,stress,test,hygrometer,0,5,49.35237,%RH,0.0,100.0,linear,clockwise,21,2.5,150,240,7.42,room,B,0.0,4005,396.2,419.4,269.2,JPEG quality 5
+images/base_hygrometer_r07_free_room.jpg,stress,test,hygrometer,0,7,20.757198,%RH,0.0,100.0,linear,clockwise,21,2.5,150,240,3.5,room,B,0.0,4007,292.6,369.4,224.4,brightness -110
+images/base_hygrometer_r08_free_room.jpg,stress,test,hygrometer,0,8,71.736622,%RH,0.0,100.0,linear,clockwise,21,2.5,150,240,2.61,room,A,0.0,4008,569.6,305.9,261.0,contrast x0.2
+images/base_barometer_r00_free_room.jpg,stress,test,barometer,1,0,1021.421306,hPa,960.0,1060.0,linear,clockwise,51,1.0,120,300,0.44,room,A,0.0,5000,327.4,360.8,217.5,salt-and-pepper 20%
+images/base_barometer_r01_free_room.jpg,stress,test,barometer,1,1,997.981566,hPa,960.0,1060.0,linear,clockwise,51,1.0,120,300,1.85,room,B,0.0,5001,398.2,515.5,258.0,blur 3 px + noise 20
+images/base_barometer_r02_free_room.jpg,stress,test,barometer,1,2,1002.498166,hPa,960.0,1060.0,linear,clockwise,51,1.0,120,300,3.61,room,A,0.0,5002,388.5,313.8,227.9,gaussian blur 5 px
+images/base_barometer_r03_free_room.jpg,stress,test,barometer,1,3,1009.51399,hPa,960.0,1060.0,linear,clockwise,51,1.0,120,300,3.15,room,B,0.0,5003,345.0,540.4,236.8,motion blur 21 px
+images/base_barometer_r04_free_room.jpg,stress,test,barometer,1,4,1007.177266,hPa,960.0,1060.0,linear,clockwise,51,1.0,120,300,0.67,room,A,0.0,5004,317.9,344.9,261.9,gaussian noise 40
+images/base_barometer_r05_free_room.jpg,stress,test,barometer,1,5,1026.510087,hPa,960.0,1060.0,linear,clockwise,51,1.0,120,300,1.82,room,B,0.0,5005,418.7,491.6,257.3,JPEG quality 5
+images/base_barometer_r06_free_room.jpg,stress,test,barometer,1,6,1017.254685,hPa,960.0,1060.0,linear,clockwise,51,1.0,120,300,6.9,room,A,0.0,5006,468.1,390.3,248.0,brightness -110
+images/base_barometer_r07_free_room.jpg,stress,test,barometer,1,7,1002.12944,hPa,960.0,1060.0,linear,clockwise,51,1.0,120,300,7.33,room,B,0.0,5007,295.1,296.9,256.3,contrast x0.2
+images/base_barometer_r08_free_room.jpg,stress,test,barometer,1,8,963.169421,hPa,960.0,1060.0,linear,clockwise,51,1.0,120,300,4.42,room,A,0.0,5008,296.5,340.4,264.4,salt-and-pepper 20%
+images/base_barometer_r09_free_room.jpg,stress,test,barometer,1,9,1037.63892,hPa,960.0,1060.0,linear,clockwise,51,1.0,120,300,1.95,room,B,0.0,5009,338.6,316.9,236.5,blur 3 px + noise 20
+images/base_oven_thermometer_r01_free_room.jpg,stress,test,oven_thermometer,0,1,134.237996,C,50.0,300.0,linear,clockwise,26,5.0,135,270,6.69,room,B,0.0,6001,389.0,354.8,240.1,gaussian blur 5 px
+images/base_oven_thermometer_r02_free_room.jpg,stress,test,oven_thermometer,0,2,174.98943,C,50.0,300.0,linear,clockwise,26,5.0,135,270,5.22,room,A,0.0,6002,599.9,406.5,258.8,motion blur 21 px
+images/base_oven_thermometer_r04_free_room.jpg,stress,test,oven_thermometer,0,4,270.105457,C,50.0,300.0,linear,clockwise,26,5.0,135,270,1.63,room,A,0.0,6004,317.5,281.2,242.7,gaussian noise 40
+images/base_oven_thermometer_r05_free_room.jpg,stress,test,oven_thermometer,0,5,290.087999,C,50.0,300.0,linear,clockwise,26,5.0,135,270,5.45,room,B,0.0,6005,414.1,426.4,250.4,JPEG quality 5
+images/base_oven_thermometer_r07_free_room.jpg,stress,test,oven_thermometer,0,7,141.684336,C,50.0,300.0,linear,clockwise,26,5.0,135,270,7.11,room,B,0.0,6007,335.6,329.9,241.3,brightness -110
+images/base_oven_thermometer_r08_free_room.jpg,stress,test,oven_thermometer,0,8,229.065176,C,50.0,300.0,linear,clockwise,26,5.0,135,270,4.05,room,A,0.0,6008,487.2,314.6,262.9,contrast x0.2
+images/base_vacuum_gauge_r01_free_room.jpg,stress,test,vacuum_gauge,0,1,12.647301,inHg,0.0,30.0,linear,anticlockwise,31,0.5,45,270,6.17,room,B,0.0,7001,315.1,427.0,257.5,salt-and-pepper 20%
+images/base_vacuum_gauge_r02_free_room.jpg,stress,test,vacuum_gauge,0,2,22.732783,inHg,0.0,30.0,linear,anticlockwise,31,0.5,45,270,4.15,room,A,0.0,7002,326.5,350.2,267.6,blur 3 px + noise 20
+images/base_vacuum_gauge_r04_free_room.jpg,stress,test,vacuum_gauge,0,4,25.952751,inHg,0.0,30.0,linear,anticlockwise,31,0.5,45,270,5.63,room,A,0.0,7004,440.8,450.2,230.8,gaussian blur 5 px
+images/base_vacuum_gauge_r05_free_room.jpg,stress,test,vacuum_gauge,0,5,18.41038,inHg,0.0,30.0,linear,anticlockwise,31,0.5,45,270,1.47,room,B,0.0,7005,335.7,594.8,262.1,motion blur 21 px
+images/base_vacuum_gauge_r07_free_room.jpg,stress,test,vacuum_gauge,0,7,27.607151,inHg,0.0,30.0,linear,anticlockwise,31,0.5,45,270,0.92,room,B,0.0,7007,339.9,549.3,277.7,gaussian noise 40
+images/base_vacuum_gauge_r08_free_room.jpg,stress,test,vacuum_gauge,0,8,1.566434,inHg,0.0,30.0,linear,anticlockwise,31,0.5,45,270,7.01,room,A,0.0,7008,616.0,340.2,242.1,JPEG quality 5
+images/base_voltmeter_r01_free_room.jpg,stress,test,voltmeter,0,1,19.845493,V,0.0,30.0,linear,clockwise,31,0.5,150,240,4.46,room,B,0.0,8001,403.4,324.6,279.7,brightness -110
+images/base_voltmeter_r02_free_room.jpg,stress,test,voltmeter,0,2,14.643638,V,0.0,30.0,linear,clockwise,31,0.5,150,240,0.01,room,A,0.0,8002,642.7,273.8,237.0,contrast x0.2
+images/base_voltmeter_r04_free_room.jpg,stress,test,voltmeter,0,4,1.262592,V,0.0,30.0,linear,clockwise,31,0.5,150,240,2.49,room,A,0.0,8004,372.2,343.5,285.3,salt-and-pepper 20%
+images/base_voltmeter_r05_free_room.jpg,stress,test,voltmeter,0,5,17.941704,V,0.0,30.0,linear,clockwise,31,0.5,150,240,7.46,room,B,0.0,8005,393.3,552.4,287.0,blur 3 px + noise 20
+images/base_voltmeter_r07_free_room.jpg,stress,test,voltmeter,0,7,17.858976,V,0.0,30.0,linear,clockwise,31,0.5,150,240,2.37,room,B,0.0,8007,410.7,468.4,219.0,gaussian blur 5 px
+images/base_voltmeter_r08_free_room.jpg,stress,test,voltmeter,0,8,16.805473,V,0.0,30.0,linear,clockwise,31,0.5,150,240,0.45,room,A,0.0,8008,499.0,387.6,273.0,motion blur 21 px
+images/base_speedometer_r00_free_room.jpg,stress,test,speedometer,1,0,178.658609,km/h,0.0,200.0,linear,clockwise,21,5.0,135,270,1.94,room,A,0.0,9000,474.3,356.8,260.0,gaussian noise 40
+images/base_speedometer_r01_free_room.jpg,stress,test,speedometer,1,1,41.392346,km/h,0.0,200.0,linear,clockwise,21,5.0,135,270,5.01,room,B,0.0,9001,342.5,448.4,278.7,JPEG quality 5
+images/base_speedometer_r02_free_room.jpg,stress,test,speedometer,1,2,183.118723,km/h,0.0,200.0,linear,clockwise,21,5.0,135,270,7.4,room,A,0.0,9002,454.6,324.4,266.3,brightness -110
+images/base_speedometer_r03_free_room.jpg,stress,test,speedometer,1,3,154.092606,km/h,0.0,200.0,linear,clockwise,21,5.0,135,270,6.75,room,B,0.0,9003,319.6,487.1,222.9,contrast x0.2
+images/base_speedometer_r04_free_room.jpg,stress,test,speedometer,1,4,126.136935,km/h,0.0,200.0,linear,clockwise,21,5.0,135,270,5.62,room,A,0.0,9004,341.2,384.1,279.6,salt-and-pepper 20%
+images/base_speedometer_r05_free_room.jpg,stress,test,speedometer,1,5,130.006166,km/h,0.0,200.0,linear,clockwise,21,5.0,135,270,1.37,room,B,0.0,9005,360.0,335.1,268.3,blur 3 px + noise 20
+images/base_speedometer_r06_free_room.jpg,stress,test,speedometer,1,6,108.659323,km/h,0.0,200.0,linear,clockwise,21,5.0,135,270,2.95,room,A,0.0,9006,399.7,272.3,235.4,gaussian blur 5 px
+images/base_speedometer_r07_free_room.jpg,stress,test,speedometer,1,7,178.4455,km/h,0.0,200.0,linear,clockwise,21,5.0,135,270,6.31,room,B,0.0,9007,310.9,355.4,222.5,motion blur 21 px
+images/base_speedometer_r08_free_room.jpg,stress,test,speedometer,1,8,49.853483,km/h,0.0,200.0,linear,clockwise,21,5.0,135,270,2.38,room,A,0.0,9008,405.8,422.5,252.6,gaussian noise 40
+images/base_speedometer_r09_free_room.jpg,stress,test,speedometer,1,9,118.671407,km/h,0.0,200.0,linear,clockwise,21,5.0,135,270,3.56,room,B,0.0,9009,421.4,578.1,248.6,JPEG quality 5
+images/base_megohmmeter_r01_free_room.jpg,stress,test,megohmmeter,0,1,0.423353,MOhm,0.1,1000.0,log,clockwise,21,,135,270,5.72,room,B,0.0,10001,325.1,386.1,242.2,brightness -110
+images/base_megohmmeter_r02_free_room.jpg,stress,test,megohmmeter,0,2,27.183859,MOhm,0.1,1000.0,log,clockwise,21,,135,270,5.08,room,A,0.0,10002,549.5,450.9,216.6,contrast x0.2
+images/base_megohmmeter_r04_free_room.jpg,stress,test,megohmmeter,0,4,100.068328,MOhm,0.1,1000.0,log,clockwise,21,,135,270,6.72,room,A,0.0,10004,397.8,313.6,242.1,salt-and-pepper 20%
+images/base_megohmmeter_r05_free_room.jpg,stress,test,megohmmeter,0,5,0.236922,MOhm,0.1,1000.0,log,clockwise,21,,135,270,1.69,room,B,0.0,10005,362.1,439.7,268.9,blur 3 px + noise 20
+images/base_megohmmeter_r07_free_room.jpg,stress,test,megohmmeter,0,7,220.097888,MOhm,0.1,1000.0,log,clockwise,21,,135,270,6.59,room,B,0.0,10007,352.4,569.2,273.2,gaussian blur 5 px
+images/base_megohmmeter_r08_free_room.jpg,stress,test,megohmmeter,0,8,30.380013,MOhm,0.1,1000.0,log,clockwise,21,,135,270,4.61,room,A,0.0,10008,625.7,363.2,277.9,motion blur 21 px
+images/variation_pressure_gauge_r01_t00_room.jpg,stress,test,pressure_gauge,0,1,3.478637,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,0.0,room,B,0.0,500100,338.8,492.1,286.8,gaussian noise 40
+images/variation_pressure_gauge_r01_t00_window.jpg,stress,test,pressure_gauge,0,1,3.478637,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,0.0,window,B,0.0478,500101,420.5,338.7,229.5,JPEG quality 5
+images/variation_pressure_gauge_r01_t20_room.jpg,stress,test,pressure_gauge,0,1,3.478637,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,20.0,room,B,0.0,500120,344.2,329.5,272.0,brightness -110
+images/variation_pressure_gauge_r01_t20_window.jpg,stress,test,pressure_gauge,0,1,3.478637,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,20.0,window,B,0.0472,500121,435.9,559.4,252.0,contrast x0.2
+images/variation_pressure_gauge_r01_t40_room.jpg,stress,test,pressure_gauge,0,1,3.478637,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,40.0,room,B,0.0,500140,381.1,380.2,253.9,salt-and-pepper 20%
+images/variation_pressure_gauge_r01_t40_window.jpg,stress,test,pressure_gauge,0,1,3.478637,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,40.0,window,B,0.0646,500141,450.3,493.8,236.2,blur 3 px + noise 20
+images/variation_pressure_gauge_r02_t00_room.jpg,stress,test,pressure_gauge,0,2,6.584772,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,0.0,room,A,0.0,500200,534.7,313.0,272.9,gaussian blur 5 px
+images/variation_pressure_gauge_r02_t00_window.jpg,stress,test,pressure_gauge,0,2,6.584772,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,0.0,window,A,0.0704,500201,694.2,384.2,218.0,motion blur 21 px
+images/variation_pressure_gauge_r02_t20_room.jpg,stress,test,pressure_gauge,0,2,6.584772,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,20.0,room,A,0.0,500220,663.6,290.2,235.4,gaussian noise 40
+images/variation_pressure_gauge_r02_t20_window.jpg,stress,test,pressure_gauge,0,2,6.584772,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,20.0,window,A,0.0667,500221,414.1,439.8,249.5,JPEG quality 5
+images/variation_pressure_gauge_r02_t40_room.jpg,stress,test,pressure_gauge,0,2,6.584772,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,40.0,room,A,0.0,500240,403.9,379.7,264.1,brightness -110
+images/variation_pressure_gauge_r02_t40_window.jpg,stress,test,pressure_gauge,0,2,6.584772,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,40.0,window,A,0.0519,500241,651.8,290.0,237.0,contrast x0.2
+images/variation_pressure_gauge_r04_t00_room.jpg,stress,test,pressure_gauge,0,4,2.931922,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,0.0,room,A,0.0,500400,422.4,358.3,266.7,salt-and-pepper 20%
+images/variation_pressure_gauge_r04_t00_window.jpg,stress,test,pressure_gauge,0,4,2.931922,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,0.0,window,A,0.0399,500401,536.7,335.5,285.9,blur 3 px + noise 20
+images/variation_pressure_gauge_r04_t20_room.jpg,stress,test,pressure_gauge,0,4,2.931922,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,20.0,room,A,0.0,500420,640.0,267.9,233.2,gaussian blur 5 px
+images/variation_pressure_gauge_r04_t20_window.jpg,stress,test,pressure_gauge,0,4,2.931922,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,20.0,window,A,0.0637,500421,354.9,445.2,220.3,motion blur 21 px
+images/variation_pressure_gauge_r04_t40_room.jpg,stress,test,pressure_gauge,0,4,2.931922,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,40.0,room,A,0.0,500440,530.8,334.0,285.6,gaussian noise 40
+images/variation_pressure_gauge_r04_t40_window.jpg,stress,test,pressure_gauge,0,4,2.931922,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,40.0,window,A,0.0518,500441,637.6,405.7,276.2,JPEG quality 5
+images/variation_pressure_gauge_r05_t00_room.jpg,stress,test,pressure_gauge,0,5,0.607553,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,0.0,room,B,0.0,500500,272.7,662.3,242.0,brightness -110
+images/variation_pressure_gauge_r05_t00_window.jpg,stress,test,pressure_gauge,0,5,0.607553,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,0.0,window,B,0.0758,500501,312.2,547.3,222.1,contrast x0.2
+images/variation_pressure_gauge_r05_t20_room.jpg,stress,test,pressure_gauge,0,5,0.607553,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,20.0,room,B,0.0,500520,415.5,398.6,218.7,salt-and-pepper 20%
+images/variation_pressure_gauge_r05_t20_window.jpg,stress,test,pressure_gauge,0,5,0.607553,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,20.0,window,B,0.1608,500521,451.0,622.9,225.1,blur 3 px + noise 20
+images/variation_pressure_gauge_r05_t40_room.jpg,stress,test,pressure_gauge,0,5,0.607553,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,40.0,room,B,0.0,500540,350.5,473.6,284.1,gaussian blur 5 px
+images/variation_pressure_gauge_r05_t40_window.jpg,stress,test,pressure_gauge,0,5,0.607553,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,40.0,window,B,0.0869,500541,464.7,444.9,216.2,motion blur 21 px
+images/variation_pressure_gauge_r07_t00_room.jpg,stress,test,pressure_gauge,0,7,5.514834,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,0.0,room,B,0.0,500700,345.2,304.8,260.8,gaussian noise 40
+images/variation_pressure_gauge_r07_t00_window.jpg,stress,test,pressure_gauge,0,7,5.514834,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,0.0,window,B,0.1057,500701,341.5,501.8,276.8,JPEG quality 5
+images/variation_pressure_gauge_r07_t20_room.jpg,stress,test,pressure_gauge,0,7,5.514834,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,20.0,room,B,0.0,500720,387.2,364.8,281.3,brightness -110
+images/variation_pressure_gauge_r07_t20_window.jpg,stress,test,pressure_gauge,0,7,5.514834,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,20.0,window,B,0.0758,500721,430.8,296.6,228.8,contrast x0.2
+images/variation_pressure_gauge_r07_t40_room.jpg,stress,test,pressure_gauge,0,7,5.514834,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,40.0,room,B,0.0,500740,395.4,308.3,244.9,salt-and-pepper 20%
+images/variation_pressure_gauge_r07_t40_window.jpg,stress,test,pressure_gauge,0,7,5.514834,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,40.0,window,B,0.0733,500741,341.5,640.1,271.7,blur 3 px + noise 20
+images/variation_pressure_gauge_r08_t00_room.jpg,stress,test,pressure_gauge,0,8,2.477963,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,0.0,room,A,0.0,500800,329.9,342.2,279.5,gaussian blur 5 px
+images/variation_pressure_gauge_r08_t00_window.jpg,stress,test,pressure_gauge,0,8,2.477963,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,0.0,window,A,0.1092,500801,371.6,362.0,283.0,motion blur 21 px
+images/variation_pressure_gauge_r08_t20_room.jpg,stress,test,pressure_gauge,0,8,2.477963,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,20.0,room,A,0.0,500820,612.6,384.4,283.1,gaussian noise 40
+images/variation_pressure_gauge_r08_t20_window.jpg,stress,test,pressure_gauge,0,8,2.477963,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,20.0,window,A,0.0314,500821,419.2,365.4,283.9,JPEG quality 5
+images/variation_pressure_gauge_r08_t40_room.jpg,stress,test,pressure_gauge,0,8,2.477963,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,40.0,room,A,0.0,500840,627.5,384.0,276.9,brightness -110
+images/variation_pressure_gauge_r08_t40_window.jpg,stress,test,pressure_gauge,0,8,2.477963,bar,0.0,10.0,linear,clockwise,51,0.1,135,270,40.0,window,A,0.0764,500841,369.9,377.6,277.0,contrast x0.2
+images/variation_tyre_gauge_r01_t00_room.jpg,stress,test,tyre_gauge,0,1,51.498901,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.0,room,B,0.0,510100,329.7,396.9,244.7,salt-and-pepper 20%
+images/variation_tyre_gauge_r01_t00_window.jpg,stress,test,tyre_gauge,0,1,51.498901,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.0,window,B,0.0821,510101,368.4,492.2,231.9,blur 3 px + noise 20
+images/variation_tyre_gauge_r01_t20_room.jpg,stress,test,tyre_gauge,0,1,51.498901,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,20.0,room,B,0.0,510120,340.4,391.7,287.4,gaussian blur 5 px
+images/variation_tyre_gauge_r01_t20_window.jpg,stress,test,tyre_gauge,0,1,51.498901,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,20.0,window,B,0.1049,510121,412.1,485.0,237.7,motion blur 21 px
+images/variation_tyre_gauge_r01_t40_room.jpg,stress,test,tyre_gauge,0,1,51.498901,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,40.0,room,B,0.0,510140,272.1,318.3,237.7,gaussian noise 40
+images/variation_tyre_gauge_r01_t40_window.jpg,stress,test,tyre_gauge,0,1,51.498901,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,40.0,window,B,0.1282,510141,351.0,641.9,231.8,JPEG quality 5
+images/variation_tyre_gauge_r02_t00_room.jpg,stress,test,tyre_gauge,0,2,21.825441,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.0,room,A,0.0,510200,483.4,328.5,284.9,brightness -110
+images/variation_tyre_gauge_r02_t00_window.jpg,stress,test,tyre_gauge,0,2,21.825441,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.0,window,A,0.0768,510201,555.9,427.2,254.0,contrast x0.2
+images/variation_tyre_gauge_r02_t20_room.jpg,stress,test,tyre_gauge,0,2,21.825441,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,20.0,room,A,0.0,510220,439.6,428.4,249.2,salt-and-pepper 20%
+images/variation_tyre_gauge_r02_t20_window.jpg,stress,test,tyre_gauge,0,2,21.825441,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,20.0,window,A,0.0287,510221,288.1,404.7,251.7,blur 3 px + noise 20
+images/variation_tyre_gauge_r02_t40_room.jpg,stress,test,tyre_gauge,0,2,21.825441,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,40.0,room,A,0.0,510240,290.6,370.9,239.4,gaussian blur 5 px
+images/variation_tyre_gauge_r02_t40_window.jpg,stress,test,tyre_gauge,0,2,21.825441,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,40.0,window,A,0.1077,510241,472.8,403.6,255.6,motion blur 21 px
+images/variation_tyre_gauge_r04_t00_room.jpg,stress,test,tyre_gauge,0,4,19.490804,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.0,room,A,0.0,510400,578.8,347.5,261.4,gaussian noise 40
+images/variation_tyre_gauge_r04_t00_window.jpg,stress,test,tyre_gauge,0,4,19.490804,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.0,window,A,0.0831,510401,471.9,285.7,247.9,JPEG quality 5
+images/variation_tyre_gauge_r04_t20_room.jpg,stress,test,tyre_gauge,0,4,19.490804,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,20.0,room,A,0.0,510420,351.1,372.2,235.9,brightness -110
+images/variation_tyre_gauge_r04_t20_window.jpg,stress,test,tyre_gauge,0,4,19.490804,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,20.0,window,A,0.0919,510421,474.8,363.5,219.7,contrast x0.2
+images/variation_tyre_gauge_r04_t40_room.jpg,stress,test,tyre_gauge,0,4,19.490804,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,40.0,room,A,0.0,510440,633.9,345.6,251.8,salt-and-pepper 20%
+images/variation_tyre_gauge_r04_t40_window.jpg,stress,test,tyre_gauge,0,4,19.490804,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,40.0,window,A,0.1262,510441,635.1,388.7,269.9,blur 3 px + noise 20
+images/variation_tyre_gauge_r05_t00_room.jpg,stress,test,tyre_gauge,0,5,8.44672,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.0,room,B,0.0,510500,377.8,505.7,265.2,gaussian blur 5 px
+images/variation_tyre_gauge_r05_t00_window.jpg,stress,test,tyre_gauge,0,5,8.44672,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.0,window,B,0.0273,510501,410.4,536.9,220.8,motion blur 21 px
+images/variation_tyre_gauge_r05_t20_room.jpg,stress,test,tyre_gauge,0,5,8.44672,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,20.0,room,B,0.0,510520,329.5,354.8,287.8,gaussian noise 40
+images/variation_tyre_gauge_r05_t20_window.jpg,stress,test,tyre_gauge,0,5,8.44672,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,20.0,window,B,0.0557,510521,437.0,642.3,245.5,JPEG quality 5
+images/variation_tyre_gauge_r05_t40_room.jpg,stress,test,tyre_gauge,0,5,8.44672,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,40.0,room,B,0.0,510540,355.3,633.5,278.8,brightness -110
+images/variation_tyre_gauge_r05_t40_window.jpg,stress,test,tyre_gauge,0,5,8.44672,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,40.0,window,B,0.1227,510541,383.8,400.2,285.5,contrast x0.2
+images/variation_tyre_gauge_r07_t00_room.jpg,stress,test,tyre_gauge,0,7,48.028518,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.0,room,B,0.0,510700,331.3,304.1,227.0,salt-and-pepper 20%
+images/variation_tyre_gauge_r07_t00_window.jpg,stress,test,tyre_gauge,0,7,48.028518,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.0,window,B,0.0263,510701,333.8,337.9,281.4,blur 3 px + noise 20
+images/variation_tyre_gauge_r07_t20_room.jpg,stress,test,tyre_gauge,0,7,48.028518,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,20.0,room,B,0.0,510720,367.0,335.2,282.1,gaussian blur 5 px
+images/variation_tyre_gauge_r07_t20_window.jpg,stress,test,tyre_gauge,0,7,48.028518,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,20.0,window,B,0.0797,510721,381.6,497.6,268.7,motion blur 21 px
+images/variation_tyre_gauge_r07_t40_room.jpg,stress,test,tyre_gauge,0,7,48.028518,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,40.0,room,B,0.0,510740,319.6,345.6,272.4,gaussian noise 40
+images/variation_tyre_gauge_r07_t40_window.jpg,stress,test,tyre_gauge,0,7,48.028518,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,40.0,window,B,0.086,510741,333.3,502.9,230.0,JPEG quality 5
+images/variation_tyre_gauge_r08_t00_room.jpg,stress,test,tyre_gauge,0,8,28.477474,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.0,room,A,0.0,510800,412.9,325.2,240.6,brightness -110
+images/variation_tyre_gauge_r08_t00_window.jpg,stress,test,tyre_gauge,0,8,28.477474,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,0.0,window,A,0.0866,510801,302.9,300.3,226.8,contrast x0.2
+images/variation_tyre_gauge_r08_t20_room.jpg,stress,test,tyre_gauge,0,8,28.477474,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,20.0,room,A,0.0,510820,291.0,316.8,246.7,salt-and-pepper 20%
+images/variation_tyre_gauge_r08_t20_window.jpg,stress,test,tyre_gauge,0,8,28.477474,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,20.0,window,A,0.0794,510821,581.1,419.5,223.9,blur 3 px + noise 20
+images/variation_tyre_gauge_r08_t40_room.jpg,stress,test,tyre_gauge,0,8,28.477474,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,40.0,room,A,0.0,510840,629.9,447.0,217.5,gaussian blur 5 px
+images/variation_tyre_gauge_r08_t40_window.jpg,stress,test,tyre_gauge,0,8,28.477474,psi,0.0,60.0,linear,clockwise,31,1.0,135,270,40.0,window,A,0.0849,510841,411.7,328.8,242.7,motion blur 21 px
+images/variation_thermometer_r01_t00_room.jpg,stress,test,thermometer,0,1,76.177237,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.0,room,B,0.0,520100,315.0,570.5,239.5,gaussian noise 40
+images/variation_thermometer_r01_t00_window.jpg,stress,test,thermometer,0,1,76.177237,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.0,window,B,0.0928,520101,310.2,481.9,230.0,JPEG quality 5
+images/variation_thermometer_r01_t20_room.jpg,stress,test,thermometer,0,1,76.177237,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,20.0,room,B,0.0,520120,330.6,417.3,285.2,brightness -110
+images/variation_thermometer_r01_t20_window.jpg,stress,test,thermometer,0,1,76.177237,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,20.0,window,B,0.0939,520121,315.7,364.7,271.0,contrast x0.2
+images/variation_thermometer_r01_t40_room.jpg,stress,test,thermometer,0,1,76.177237,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,40.0,room,B,0.0,520140,274.0,263.0,220.1,salt-and-pepper 20%
+images/variation_thermometer_r01_t40_window.jpg,stress,test,thermometer,0,1,76.177237,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,40.0,window,B,0.0707,520141,391.6,644.0,275.5,blur 3 px + noise 20
+images/variation_thermometer_r02_t00_room.jpg,stress,test,thermometer,0,2,82.246591,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.0,room,A,0.0,520200,330.4,430.9,249.6,gaussian blur 5 px
+images/variation_thermometer_r02_t00_window.jpg,stress,test,thermometer,0,2,82.246591,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.0,window,A,0.1114,520201,685.6,304.0,221.9,motion blur 21 px
+images/variation_thermometer_r02_t20_room.jpg,stress,test,thermometer,0,2,82.246591,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,20.0,room,A,0.0,520220,696.6,284.4,227.0,gaussian noise 40
+images/variation_thermometer_r02_t20_window.jpg,stress,test,thermometer,0,2,82.246591,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,20.0,window,A,0.0406,520221,385.0,317.2,279.6,JPEG quality 5
+images/variation_thermometer_r02_t40_room.jpg,stress,test,thermometer,0,2,82.246591,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,40.0,room,A,0.0,520240,459.3,360.8,267.8,brightness -110
+images/variation_thermometer_r02_t40_window.jpg,stress,test,thermometer,0,2,82.246591,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,40.0,window,A,0.057,520241,634.1,413.7,257.0,contrast x0.2
+images/variation_thermometer_r04_t00_room.jpg,stress,test,thermometer,0,4,12.59804,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.0,room,A,0.0,520400,472.0,343.4,252.9,salt-and-pepper 20%
+images/variation_thermometer_r04_t00_window.jpg,stress,test,thermometer,0,4,12.59804,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.0,window,A,0.0341,520401,501.4,404.8,275.3,blur 3 px + noise 20
+images/variation_thermometer_r04_t20_room.jpg,stress,test,thermometer,0,4,12.59804,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,20.0,room,A,0.0,520420,320.4,418.6,259.3,gaussian blur 5 px
+images/variation_thermometer_r04_t20_window.jpg,stress,test,thermometer,0,4,12.59804,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,20.0,window,A,0.0522,520421,432.8,435.6,217.8,motion blur 21 px
+images/variation_thermometer_r04_t40_room.jpg,stress,test,thermometer,0,4,12.59804,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,40.0,room,A,0.0,520440,426.1,361.9,276.0,gaussian noise 40
+images/variation_thermometer_r04_t40_window.jpg,stress,test,thermometer,0,4,12.59804,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,40.0,window,A,0.1247,520441,578.3,308.1,233.0,JPEG quality 5
+images/variation_thermometer_r05_t00_room.jpg,stress,test,thermometer,0,5,69.761853,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.0,room,B,0.0,520500,398.4,330.2,225.3,brightness -110
+images/variation_thermometer_r05_t00_window.jpg,stress,test,thermometer,0,5,69.761853,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.0,window,B,0.0919,520501,446.0,296.8,226.7,contrast x0.2
+images/variation_thermometer_r05_t20_room.jpg,stress,test,thermometer,0,5,69.761853,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,20.0,room,B,0.0,520520,355.4,469.3,226.9,salt-and-pepper 20%
+images/variation_thermometer_r05_t20_window.jpg,stress,test,thermometer,0,5,69.761853,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,20.0,window,B,0.0613,520521,393.5,357.2,273.6,blur 3 px + noise 20
+images/variation_thermometer_r05_t40_room.jpg,stress,test,thermometer,0,5,69.761853,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,40.0,room,B,0.0,520540,280.4,577.4,245.7,gaussian blur 5 px
+images/variation_thermometer_r05_t40_window.jpg,stress,test,thermometer,0,5,69.761853,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,40.0,window,B,0.1055,520541,308.4,475.3,271.2,motion blur 21 px
+images/variation_thermometer_r07_t00_room.jpg,stress,test,thermometer,0,7,95.037196,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.0,room,B,0.0,520700,420.5,457.1,244.0,gaussian noise 40
+images/variation_thermometer_r07_t00_window.jpg,stress,test,thermometer,0,7,95.037196,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.0,window,B,0.0573,520701,399.2,483.9,233.1,JPEG quality 5
+images/variation_thermometer_r07_t20_room.jpg,stress,test,thermometer,0,7,95.037196,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,20.0,room,B,0.0,520720,347.9,498.3,287.7,brightness -110
+images/variation_thermometer_r07_t20_window.jpg,stress,test,thermometer,0,7,95.037196,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,20.0,window,B,0.0358,520721,336.4,588.0,260.0,contrast x0.2
+images/variation_thermometer_r07_t40_room.jpg,stress,test,thermometer,0,7,95.037196,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,40.0,room,B,0.0,520740,262.7,408.5,223.2,salt-and-pepper 20%
+images/variation_thermometer_r07_t40_window.jpg,stress,test,thermometer,0,7,95.037196,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,40.0,window,B,0.1001,520741,375.0,537.7,287.7,blur 3 px + noise 20
+images/variation_thermometer_r08_t00_room.jpg,stress,test,thermometer,0,8,29.442178,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.0,room,A,0.0,520800,392.8,365.2,270.6,gaussian blur 5 px
+images/variation_thermometer_r08_t00_window.jpg,stress,test,thermometer,0,8,29.442178,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,0.0,window,A,0.1131,520801,339.1,282.7,252.2,motion blur 21 px
+images/variation_thermometer_r08_t20_room.jpg,stress,test,thermometer,0,8,29.442178,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,20.0,room,A,0.0,520820,555.1,360.6,282.6,gaussian noise 40
+images/variation_thermometer_r08_t20_window.jpg,stress,test,thermometer,0,8,29.442178,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,20.0,window,A,0.0955,520821,628.7,409.6,260.7,JPEG quality 5
+images/variation_thermometer_r08_t40_room.jpg,stress,test,thermometer,0,8,29.442178,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,40.0,room,A,0.0,520840,285.7,405.5,233.8,brightness -110
+images/variation_thermometer_r08_t40_window.jpg,stress,test,thermometer,0,8,29.442178,C,-20.0,120.0,linear,clockwise,29,2.5,135,270,40.0,window,A,0.1095,520841,553.4,402.6,266.1,contrast x0.2

@@ -1,0 +1,19 @@
+kernel,variance of Laplacian,gradient L1/L2,PSNR vs sharp photo (dB),chosen by
+none (input),70.581,0.286,29.505,
+gaussian sigma=1.0,233.138,0.461,30.403,
+gaussian sigma=1.5,259.748,0.388,32.477,
+gaussian sigma=2.0,551.56,0.334,35.687, best PSNR (truth)
+gaussian sigma=3.0,1604.373,0.312,28.194,highest Laplacian variance
+motion len=7 angle=0,462.1,0.515,29.827,
+motion len=7 angle=45,512.27,0.495,29.819,
+motion len=7 angle=90,505.912,0.506,29.941,
+motion len=7 angle=135,468.041,0.503,29.89,
+motion len=11 angle=0,971.999,0.516,24.101,
+motion len=11 angle=45,1140.971,0.51,22.042,
+motion len=11 angle=90,1115.082,0.508,23.236,
+motion len=11 angle=135,1039.545,0.525,22.678,
+motion len=15 angle=0,1167.732,0.502,21.36,
+motion len=15 angle=45,1276.872,0.498,20.109,
+motion len=15 angle=90,1232.038,0.492,20.855,
+motion len=15 angle=135,1153.047,0.509,20.86,
+edge-based estimate: gaussian sigma=1.98,,,35.753,used by Stage 1

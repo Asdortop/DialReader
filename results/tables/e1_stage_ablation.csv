@@ -1,0 +1,13 @@
+data,configuration,n,answered %,mean error (% FS),95% CI,median,90th pct,gross error % (>10% FS),within 1 division %,coverage % (reliable),gross error % among reliable
+Test split,Full pipeline,182,97.8,0.34,"[0.04, 0.87]",0.01,0.04,0.56,98.88,89.56,0.0
+Test split,Stage 8 off (no abstention),182,97.8,0.34,"[0.04, 0.87]",0.01,0.04,0.56,98.88,97.8,0.56
+Test split,Stage 1 off (no restoration),182,98.35,0.26,"[0.02, 0.73]",0.01,0.04,0.56,99.44,91.76,0.0
+Test split,Stage 3 off (no tilt correction),182,92.31,2.83,"[1.21, 4.86]",0.02,3.42,5.36,88.69,56.04,0.0
+Test split,Stage 4 off (no polar unwrap),182,86.26,1.43,"[1.27, 1.60]",1.27,2.5,0.0,89.17,86.26,0.0
+Test split,Stage 5 check off (no DFT / comb fit),182,97.8,0.47,"[0.16, 1.03]",0.1,0.32,0.56,97.75,57.14,0.0
+Test split + blur 2 px + noise 12,Full pipeline,182,97.25,0.34,"[0.03, 0.93]",0.02,0.06,0.56,98.87,87.91,0.0
+Test split + blur 2 px + noise 12,Stage 8 off (no abstention),182,97.25,0.34,"[0.03, 0.93]",0.02,0.06,0.56,98.87,97.25,0.56
+Test split + blur 2 px + noise 12,Stage 1 off (no restoration),182,97.25,1.23,"[0.16, 2.62]",0.02,0.07,2.26,96.61,87.91,0.0
+Test split + blur 2 px + noise 12,Stage 3 off (no tilt correction),182,96.15,3.41,"[1.49, 5.68]",0.03,3.43,5.14,89.14,56.04,0.0
+Test split + blur 2 px + noise 12,Stage 4 off (no polar unwrap),182,87.36,1.51,"[1.35, 1.68]",1.4,2.79,0.0,89.94,87.36,0.0
+Test split + blur 2 px + noise 12,Stage 5 check off (no DFT / comb fit),182,97.25,0.44,"[0.13, 1.03]",0.09,0.3,0.56,98.87,64.29,0.0

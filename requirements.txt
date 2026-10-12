@@ -1,0 +1,14 @@
+numpy
+scipy
+opencv-python
+matplotlib
+pandas
+scikit-learn
+joblib
+pillow
+streamlit
+requests
+python-dotenv
+pyarrow
+huggingface_hub
+pytest

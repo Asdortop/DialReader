@@ -1,0 +1,14 @@
+{
+  "needle_spread": 1.075946817446813,
+  "method_gap": 0.5524189152394886,
+  "rim_support": 0.4080555555555556,
+  "rim_residual": 1.176023745239058,
+  "comb_residual": 0.08100232476690453,
+  "comb_missing": 0.07142857142857142,
+  "dft_gap": 0.015,
+  "tick_snr": 11.652441852041724,
+  "glare_overlap": 0.5880827839756575,
+  "tick_count": 0.5,
+  "out_of_range": 1.0,
+  "sentinel": 1.0
+}

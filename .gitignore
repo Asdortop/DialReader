@@ -1,0 +1,29 @@
+# Secrets: the API key must never be committed. Copy .env.example to .env and fill it in.
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Editors and operating system
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# VLM call cache and log: regenerated on demand, and the log holds every prompt and model reply.
+cache/
+logs/
+
+# MeasureBench is third-party data (CC BY-SA 4.0). It is downloaded, not redistributed from here:
+#   python experiments/measurebench_download.py
+data/measurebench/raw/
+data/measurebench/dial/images/
+data/measurebench/dial/sheets/

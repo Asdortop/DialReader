@@ -1,0 +1,8 @@
+condition,photos,registered % (>= 15 inliers),mean RANSAC inliers,answered % via registration,mean error via registration (% FS),gross % via registration,answered % via Stages 2-3,mean error via Stages 2-3 (% FS),gross % via Stages 2-3,answered % registration with fallback,mean error with fallback (% FS)
+"tilt 0 deg, room light",18,100.0,64.44,100.0,0.01,0.0,100.0,0.01,0.0,100.0,0.01
+"tilt 0 deg, window light",18,100.0,45.56,94.44,0.2,0.0,94.44,0.18,0.0,94.44,0.2
+"tilt 20 deg, room light",18,100.0,60.56,100.0,0.01,0.0,100.0,0.01,0.0,100.0,0.01
+"tilt 20 deg, window light",18,100.0,42.39,83.33,3.0,6.67,88.89,2.88,6.25,88.89,2.81
+"tilt 40 deg, room light",18,100.0,34.5,100.0,0.02,0.0,100.0,0.2,0.0,100.0,0.02
+"tilt 40 deg, window light",18,77.78,24.89,72.22,0.04,0.0,94.44,0.34,0.0,94.44,0.03
+all,108,96.3,45.39,91.67,0.5,1.01,96.3,0.57,0.96,96.3,0.48

@@ -1,0 +1,40 @@
+{
+  "sentinel_threshold_fs": 6.531918282561313,
+  "hook1": {
+    "parses": 33,
+    "accepted": 19,
+    "accepted_wrong": 0,
+    "raw_correct": 30,
+    "types_with_scale": 11,
+    "types": 11,
+    "mean_match_rate": 0.7541650268922996
+  },
+  "Test split: hook 3 vs rule-based": {
+    "verdict": "no measurable effect",
+    "useful": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "silent": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "Stress set: hook 3 vs rule-based": {
+    "verdict": "no measurable effect",
+    "useful": [
+      0.5494505494505495,
+      0.0,
+      1.6483516483516485
+    ],
+    "silent": [
+      0.5494505494505495,
+      0.0,
+      1.6483516483516485
+    ]
+  },
+  "vlm_model": "anthropic/claude-haiku-5.5",
+  "vlm_spend_usd": 0.3239
+}
