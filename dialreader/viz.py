@@ -1,6 +1,6 @@
 """Overlays and charts that show what each stage found.
 
-Used by the Streamlit demo, the weekly lab figures and the experiment report.
+Used by the Streamlit demo, the technique figures and the experiment report.
 """
 import cv2
 import numpy as np
@@ -9,8 +9,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from . import w03_geometry as geo
-from . import w09_detect as det
+from . import geometry as geo
+from . import detect as det
 
 # Chart palette (fixed order) and chrome.
 SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"]

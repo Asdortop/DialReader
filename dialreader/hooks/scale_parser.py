@@ -8,8 +8,8 @@ user is asked to enter the scale by hand.
 """
 import numpy as np
 
-from .. import w01_matrix as mx
-from .. import w03_geometry as geo
+from .. import matrix as mx
+from .. import geometry as geo
 
 PROMPT = (
     "This image shows the face of one analogue dial gauge, seen from the front.\n"

@@ -9,26 +9,63 @@ the camera tilt, unwraps the dial into a strip, finds the tick marks and the nee
 and converts the needle angle into a value with an error bar. When the result is
 unreliable it says so instead of guessing.
 
-## See the results
+## Run the app
+
+The main app is a React page backed by a FastAPI server. Upload a photo (or pick one of
+the example photos), choose the gauge type, check the scale, and read the dial. The page
+walks through every stage of the pipeline on that photo.
+
+```
+pip install -r requirements.txt
+uvicorn api:app --reload --port 8000      # backend, from the repository root
+cd frontend && npm install && npm run dev # frontend, http://localhost:5173
+```
+
+See `frontend/README.md` for the API address and allowed origins.
+
+## Other ways to look at it
 
 | What | How |
 |---|---|
 | **Report** with every experiment, table and figure | open `results/report.html` in a browser |
-| **Interactive demo**: pick or upload a photo, see every stage | `streamlit run app.py` |
+| Quick demo in Streamlit (lighter, also shows the experiment tables) | `streamlit run app.py` |
 | Raw tables and figures | `results/tables/`, `results/figures/` |
+| Unit tests | `python -m pytest tests -q` |
 
-## Run it
+## Gauge types
 
-```
-pip install -r requirements.txt
-python -m pytest tests -q                 # 22 unit tests
-streamlit run app.py                      # the demo
-```
+The pipeline does not depend on the gauge type: it measures the needle angle against the
+tick marks. The type matters only through the **scale** used in Stage 7: the range, the
+unit, linear or log, and the direction in which the numbers increase. Get the scale wrong
+and the reading is wrong, yet it can still look precise: on the vacuum gauge example, a
+clockwise scale instead of anticlockwise reads 2.08 inHg instead of 27.93. So the
+scale is handled in three layers:
+
+1. **Presets** (`dialreader/gauges.py`): pressure, tyre pressure, thermometer, oven
+   thermometer, hygrometer, barometer, vacuum, weighing scale, voltmeter, ammeter,
+   speedometer, tachometer and insulation tester. Each one fills the unit, linear or log,
+   direction and the common ranges. They are starting points: one gauge type comes in
+   many ranges, and the numbers printed on the dial always win.
+2. **Range cross-check** (`gauges.scale_check`). Major ticks are labelled in round steps
+   (1, 2, 2.5 or 5 times a power of ten, or whole decades on a log scale), so the range
+   divided by the number of major intervals the pipeline found must be such a step, with
+   the ends on multiples of it. If not, the reading is marked unreliable, and the preset
+   ranges that do fit are offered. On the rendered photos, with the correct scale, it
+   could be applied to 286 of 290 clean photos (1 false alarm) and to 157 of 182 stress
+   photos (3 false alarms). It caught every deliberately wrong range (span x1.6, x0.6,
+   lower end shifted) and every linear/log mix-up. **It cannot check the direction**, so
+   the app asks for it explicitly.
+3. **Scale read from the photo** (GenAI hook 1, optional, needs a key): a vision-language
+   model reads the printed numbers, and the parse is used only if it lines up with the
+   detected ticks. Otherwise the hand-entered scale is used.
+
+The tick count is not part of any preset because it varies between models. Enter it only
+if you counted it: a wrong count makes Stage 5 pad or trim the scale.
 
 To regenerate everything from scratch (about 40 minutes, mostly E2):
 
 ```
-python experiments/run_all.py             # classical experiments, lab figures, report
+python experiments/run_all.py             # classical experiments, figures, report
 python experiments/run_all.py --genai     # also the GenAI experiments (needs a key, see below)
 ```
 
@@ -48,28 +85,26 @@ With no key the hooks stay off and the classical pipeline runs exactly the same.
 Every call is cached in `cache/vlm/` (a rerun costs nothing) and logged with its
 prompt, output, tokens and cost in `logs/vlm_calls.jsonl`.
 
-## Layout: one module per lab week
+## How it works
 
-| Week | Lab program | Module | DialReader role |
+| Stage | What it does | Techniques | Module |
 |---|---|---|---|
-| 1 | SciPy and matrix arithmetic | `dialreader/w01_matrix.py` | rotation, affine and homography matrices, polar grid, DCT matrix |
-| 2 | Image attributes and negation | `w02_attributes.py` | dataset loader, attributes, histogram, EXIF, negative |
-| 3 | 2D and 3D transformations | `w03_geometry.py` | Stage 3 tilt correction, Stage 4 polar unwrap |
-| 4 | Enhancement with filters and histograms | `w04_enhance.py` | Stage 1 contrast, smoothing, sharpening |
-| 5 | Linear and non-linear filters | `w05_restore.py` | Stage 1 denoising, Wiener deblurring, glare mask |
-| 6 | Image segmentation | `w06_segment.py` | Otsu, region growing, needle and glare masks |
-| 7 | Image compression | `w07_compress.py` | Stage 11: DCT, quantisation, run-length and Huffman coding |
-| 8 | Morphological opening and closing | `w08_morphology.py` | mask cleanup, black-hat ticks, skeleton |
-| 9 | Canny edge detection | `w09_detect.py` | Canny, Hough circle and line, RANSAC ellipse, tick DFT and comb |
-| 10 | HOG | `w10_hog.py` | Stage 9 gauge detector |
-| 11 | SIFT interest points | `w11_sift.py` | Stage 10 registration to a reference photo |
-| 12 | Image stitching panorama | `w12_stitch.py` | Stage 10 multi-gauge panel |
-| 13 | LBP | `w13_lbp.py` | Stage 9 gauge-type classifier |
-| 14 | Image classification with Bag of Words | `w14_bow.py` | Stage 9 gauge-type classifier |
+| 1 Restore | denoise, deblur, fix contrast, mask glare | median and Gaussian filters, Wiener deblurring, CLAHE | `enhance.py`, `restore.py` |
+| 2 Find the dial | locate the dial face, even when tilted | Canny, Hough circle, RANSAC ellipse | `detect.py` |
+| 3 Undo the tilt | map the ellipse back to a circle | affine transform, circle-preserving homography | `geometry.py` |
+| 4 Unwrap | turn the dial into a strip (angle by radius) | polar transform, negative for dark faces | `geometry.py`, `attributes.py` |
+| 5 Ticks | tick positions, spacing, scale ends | black-hat, DFT, autocorrelation, comb fit | `morphology.py`, `detect.py` |
+| 6 Needle | needle angle, three ways, with a spread | Otsu, opening and closing, skeleton, line fit, Hough line | `segment.py`, `morphology.py` |
+| 7 Calibrate | needle angle to value | linear, log or piecewise interpolation | `calibrate.py` |
+| 8 Uncertainty | error bar and reliable / unreliable flag | confidence signals with tuned thresholds | `uncertainty.py` |
+| 9 Recognise (optional) | find the gauge, name its type | HOG + SVM, LBP, Bag of Words | `hog.py`, `lbp.py`, `bow.py` |
+| 10 Register (optional) | reuse a reference photo, stitch a panel | SIFT, RANSAC homography, blending | `sift.py`, `stitch.py` |
+| 11 Compress (optional) | shrink the photo for upload | 8x8 DCT, quantisation, run-length and Huffman coding | `compress.py` |
 
-The stages are chained in `dialreader/pipeline.py`, with `calibrate.py` (Stage 7) and
-`uncertainty.py` (Stage 8). The hooks are in `dialreader/hooks/`:
-`scale_parser.py` (hook 1), `sentinel.py` (hook 2), `repair.py` (hook 3), `vlm.py` (the client).
+All modules are in `dialreader/`; `matrix.py` holds the shared matrix toolkit (rotations,
+homographies, polar grid, DCT). Stages 1 to 8 are chained in `dialreader/pipeline.py`.
+The GenAI hooks are in `dialreader/hooks/`: `scale_parser.py` (hook 1), `sentinel.py`
+(hook 2), `repair.py` (hook 3), `vlm.py` (the client).
 
 ## Data
 

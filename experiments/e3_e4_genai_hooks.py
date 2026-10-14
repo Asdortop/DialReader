@@ -23,7 +23,7 @@ import pandas as pd
 
 from common import (DATA, FIGS, GROSS_FS, RESULTS, coverage_at_risk, error_fs, load_synth, risk_coverage, run,
                     save_table)
-from dialreader import pipeline, uncertainty as unc, viz, w02_attributes as attrs
+from dialreader import pipeline, uncertainty as unc, viz, attributes as attrs
 from dialreader.hooks import repair, scale_parser, sentinel
 from dialreader.hooks.vlm import VLM
 

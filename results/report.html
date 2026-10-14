@@ -32,25 +32,25 @@ figcaption{font-size:13px;color:var(--ink2);margin-top:4px;max-width:90ch}
 .callout{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;
 padding:10px 14px;margin:14px 0;max-width:86ch}
 .callout.neg{border-left-color:var(--bad)} .callout.note{border-left-color:var(--warn)}
-.weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px}
-.week{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}
-.week h4{margin:0 0 2px;font-size:14.5px} .week p{font-size:13px;color:var(--ink2);margin:2px 0 8px}
-.week img{width:100%;border:1px solid var(--line);border-radius:6px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}
+.card h4{margin:0 0 2px;font-size:14.5px} .card p{font-size:13px;color:var(--ink2);margin:2px 0 8px}
+.card img{width:100%;border:1px solid var(--line);border-radius:6px}
 .missing{color:var(--bad);font-size:13px} code{background:#f0efec;padding:1px 5px;border-radius:4px;font-size:13px}
 details{margin:10px 0 14px} summary{cursor:pointer;color:var(--accent);font-size:13.5px;padding:4px 0}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px}
 </style></head><body><main><h1>DialReader: results</h1>
 <p class="meta">Image Processing and Computer Vision course project · built from the DialReader project plan ·
-generated 13 October 2026</p>
+generated 14 October 2026</p>
 <p class="lede">DialReader reads an analogue dial gauge from one photo with classical image processing, gives the value
 with an error bar, and says "unreliable" instead of guessing. GenAI is used at three narrow points only, each one
 tested against the classical pipeline. This page shows what was built and what was measured.</p>
-<nav><a href="#summary">Summary</a><a href="#pipeline">Pipeline</a><a href="#data">Data</a><a href="#e1">E1 stages</a>
+<nav><a href="#summary">Summary</a><a href="#pipeline">Pipeline</a><a href="#stages">How each stage works</a><a href="#data">Data</a><a href="#e1">E1 stages</a>
 <a href="#e2">E2 robustness</a><a href="#genai">E3-E4 GenAI hooks</a><a href="#e5">E5 unseen gauges</a>
-<a href="#e6">E6 public photos</a><a href="#optional">Stages 9-11</a><a href="#weeks">Lab weeks</a>
+<a href="#e6">E6 public photos</a><a href="#optional">Stages 9-11</a>
 <a href="#limits">Limits</a><a href="#run">How to run</a></nav>
 <h2 id="summary">Summary</h2>
-<div class="tiles"><div class="tile"><div class="tlabel">Mean error, classical pipeline</div><div class="tvalue">0.02% FS</div><div class="tsub">reliable readings, synthetic test split</div></div><div class="tile"><div class="tlabel">Mean error, VLM alone</div><div class="tvalue">1.84% FS</div><div class="tsub">same photos, anthropic/claude-haiku-5.5</div></div><div class="tile"><div class="tlabel">Photos flagged reliable</div><div class="tvalue">90%</div><div class="tsub">stress set: 76%</div></div><div class="tile"><div class="tlabel">Reliable but grossly wrong</div><div class="tvalue">0%</div><div class="tsub">VLM alone on the stress set: 27%</div></div><div class="tile"><div class="tlabel">VLM spend for all experiments</div><div class="tvalue">$0.42</div><div class="tsub">1013 calls, each cached and logged</div></div></div>
+<div class="tiles"><div class="tile"><div class="tlabel">Mean error, classical pipeline</div><div class="tvalue">0.02% FS</div><div class="tsub">reliable readings, synthetic test split</div></div><div class="tile"><div class="tlabel">Mean error, VLM alone</div><div class="tvalue">1.84% FS</div><div class="tsub">same photos, anthropic/claude-haiku-5.5</div></div><div class="tile"><div class="tlabel">Photos flagged reliable</div><div class="tvalue">90%</div><div class="tsub">stress set: 76%</div></div><div class="tile"><div class="tlabel">Reliable but grossly wrong</div><div class="tvalue">0%</div><div class="tsub">VLM alone on the stress set: 27%</div></div><div class="tile"><div class="tlabel">VLM spend for all experiments</div><div class="tvalue">$0.00</div><div class="tsub">0 calls, each cached and logged</div></div></div>
 <ul>
 <li><b>The classical pipeline works on the synthetic set.</b> On 182 held-back test photos it
 answers 98%, with a median error of 0.01% of full scale,
@@ -74,7 +74,7 @@ hand-collected set the plan calls for, which has not been photographed. Syntheti
 as the MeasureBench result shows.</li>
 </ul>
 <h2 id="pipeline">The pipeline</h2>
-<p>Eight classical stages do every measurement. Each stage is one or more lab programs.</p>
+<p>Eight classical stages do every measurement.</p>
 <div class="tablewrap"><table><thead><tr><th>Stage</th><th>What it does</th><th>Techniques</th></tr></thead><tbody>
 <tr><td>1 Restore</td><td>Denoise, deblur, fix contrast, mask glare</td><td>Median and Gaussian filters, Wiener filter, cepstrum, CLAHE, unsharp mask</td></tr>
 <tr><td>2 Find the dial</td><td>Coarse circle, then an ellipse that ignores outlier edges</td><td>Canny with adaptive thresholds, Hough circle, RANSAC ellipse</td></tr>
@@ -94,6 +94,20 @@ them off.</p>
 <tr><td>2 Sentinel</td><td>After Stage 7</td><td>Gives a coarse reading from the original photo</td><td>Only raises a flag when it disagrees with geometry; never replaces the value</td></tr>
 <tr><td>3 Repair loop</td><td>After Stage 8, unreliable photos only</td><td>Looks at three overlays and picks one action from a fixed menu</td><td>The pipeline reruns and Stage 8 judges the result; the VLM never outputs a number</td></tr>
 </tbody></table></div>
+<h2 id="stages">How each stage works</h2><p>One photo through the techniques behind Stages 1 to 6. Click a figure to enlarge it.</p><div class="gallery">
+<div class="card"><h4>Stage 1: restore</h4><p>Histogram equalisation written out, and CLAHE, to fix contrast before anything is measured.<br><code>dialreader/enhance.py</code></p><a href="figures/contrast_histograms.png"><img src="figures/contrast_histograms.png" alt="Stage 1: restore" loading="lazy"></a></div>
+<div class="card"><h4>Stage 1: restore</h4><p>Median filter for impulse noise, Gaussian for sensor noise, Wiener deblurring with a kernel estimated from the photo's own edges, and a glare mask.<br><code>dialreader/restore.py</code></p><a href="figures/restoration.png"><img src="figures/restoration.png" alt="Stage 1: restore" loading="lazy"></a></div>
+<div class="card"><h4>Stage 2: find the dial</h4><p>Canny step by step: gradients, non-maximum suppression and hysteresis, with thresholds set from the image.<br><code>dialreader/detect.py</code></p><a href="figures/canny_steps.png"><img src="figures/canny_steps.png" alt="Stage 2: find the dial" loading="lazy"></a></div>
+<div class="card"><h4>Stage 2: find the dial</h4><p>A Hough circle gives a coarse rim, a RANSAC ellipse fits it while ignoring outlier edges; the tick comb and a Hough line complete a first end-to-end reading.<br><code>dialreader/detect.py</code></p><a href="figures/dial_detectors.png"><img src="figures/dial_detectors.png" alt="Stage 2: find the dial" loading="lazy"></a></div>
+<div class="card"><h4>Stage 3: undo the tilt</h4><p>The fitted ellipse is mapped back to a circle by an affine transform, then a circle-preserving homography removes the perspective that is left.<br><code>dialreader/geometry.py</code></p><a href="figures/tilt_correction.png"><img src="figures/tilt_correction.png" alt="Stage 3: undo the tilt" loading="lazy"></a></div>
+<div class="card"><h4>Stage 4: unwrap</h4><p>A polar transform turns the round dial into a strip: ticks become vertical marks and the needle one vertical line.<br><code>dialreader/geometry.py</code></p><a href="figures/polar_unwrap.png"><img src="figures/polar_unwrap.png" alt="Stage 4: unwrap" loading="lazy"></a></div>
+<div class="card"><h4>Stage 4: unwrap</h4><p>Taking the negative of a light-on-dark face lets one tick detector serve both kinds of dial.<br><code>dialreader/attributes.py</code></p><a href="figures/face_negation.png"><img src="figures/face_negation.png" alt="Stage 4: unwrap" loading="lazy"></a></div>
+<div class="card"><h4>Stage 5: ticks</h4><p>A black-hat transform pulls out the thin dark tick marks and suppresses the printed numbers and the face.<br><code>dialreader/morphology.py</code></p><a href="figures/tick_blackhat.png"><img src="figures/tick_blackhat.png" alt="Stage 5: ticks" loading="lazy"></a></div>
+<div class="card"><h4>Stage 5: ticks</h4><p>The tick profile's DFT and autocorrelation give the spacing; a comb fit places every tick and bridges gaps.<br><code>dialreader/detect.py</code></p><a href="figures/tick_dft.png"><img src="figures/tick_dft.png" alt="Stage 5: ticks" loading="lazy"></a></div>
+<div class="card"><h4>Stage 6: needle</h4><p>Otsu thresholding on colour and tone channels separates the needle from the dial face.<br><code>dialreader/segment.py</code></p><a href="figures/needle_segmentation.png"><img src="figures/needle_segmentation.png" alt="Stage 6: needle" loading="lazy"></a></div>
+<div class="card"><h4>Stage 6: needle</h4><p>Opening and closing clean the mask; the skeleton gives a thin line for the angle fit.<br><code>dialreader/morphology.py</code></p><a href="figures/mask_cleanup.png"><img src="figures/mask_cleanup.png" alt="Stage 6: needle" loading="lazy"></a></div>
+<div class="card"><h4>All stages</h4><p>The rotation, affine and homography matrices, homography solver and polar sampling grid every stage uses.<br><code>dialreader/matrix.py</code></p><a href="figures/matrix_toolkit.png"><img src="figures/matrix_toolkit.png" alt="All stages" loading="lazy"></a></div>
+</div>
 <h2 id="data">Data and ground truth</h2>
 <p>290 synthetic photos follow the plan's collection protocol: a base set of 10 readings for each
 of 11 gauge types in good conditions, and a variation set of 3 gauges x 10 readings x 3 tilts (0, 20, 40 degrees) x
@@ -104,7 +118,7 @@ tilt, in-plane roll, uneven light, glare, lens blur, sensor noise and JPEG compr
 <li><b>Stress set</b> (182 photos): the test split with one severe degradation each, to supply hard cases.</li>
 <li><b>MeasureBench subset</b> (21 photos): public real-world photos, filtered by hand to single-needle circular dials.</li></ul>
 <div class="tablewrap"><table>
-<caption>Week 2 output: dataset statistics per gauge type</caption>
+<caption>Dataset statistics per gauge type</caption>
 <thead><tr><th class="">gauge</th><th class="num">photos</th><th class="num">width</th><th class="num">height</th><th class="num">mean_grey</th><th class="num">std_grey</th><th class="num">entropy_bits</th><th class="num">bright_fraction</th></tr></thead><tbody>
 <tr><td class="">barometer</td><td class="num">10</td><td class="num">960</td><td class="num">720</td><td class="num">151.53</td><td class="num">44.4</td><td class="num">6.42</td><td class="num">0.105</td></tr>
 <tr><td class="">hygrometer</td><td class="num">10</td><td class="num">960</td><td class="num">720</td><td class="num">159.38</td><td class="num">39.23</td><td class="num">6.33</td><td class="num">0.085</td></tr>
@@ -340,7 +354,7 @@ no measurable effect. Most flagged photos have the
 needle or the ticks hidden by glare or destroyed by the degradation, and no action on the menu can bring that back.
 The success criterion written down before the test (more fixes than the rule at equal compute) is not met.</div>
 <h3>Cost and logging</h3><p>All VLM calls for this project, the hook experiments, the VLM-alone baselines
-and the MeasureBench run, cost $0.42 in total (1013 calls). Hook 1
+and the MeasureBench run, cost $0.00 in total (0 calls). Hook 1
 runs once per gauge type, hook 2 once per photo and hook 3 only on flagged photos. Every call is cached on disk and
 logged with its prompt, output, token counts, cost and validation result in <code>logs/vlm_calls.jsonl</code>.</p>
 <h2 id="e5">E5: does it generalise to unseen gauge types?</h2>
@@ -423,6 +437,7 @@ earlier special-purpose pipelines also scored low on MeasureBench.</div>
 <tr><td class="">LBP + SVM</td><td class="num">145</td><td class="num">145</td><td class="num">97.2</td><td class="num">91</td><td class="num">68.1</td></tr>
 <tr><td class="">Bag of Words (SIFT) + SVM</td><td class="num">145</td><td class="num">145</td><td class="num">97.9</td><td class="num">91</td><td class="num">68.1</td></tr>
 </tbody></table></div>
+<div class="two"><figure><a href="figures/lbp_texture.png"><img src="figures/lbp_texture.png" alt="Local binary patterns: texture codes of a dial face." loading="lazy"></a><figcaption>Local binary patterns: texture codes of a dial face.</figcaption></figure><figure><a href="figures/bag_of_words.png"><img src="figures/bag_of_words.png" alt="Bag of Words: SIFT descriptors clustered into visual words." loading="lazy"></a><figcaption>Bag of Words: SIFT descriptors clustered into visual words.</figcaption></figure></div>
 <figure><a href="figures/stage9_confusion.png"><img src="figures/stage9_confusion.png" alt="Confusion matrices on the stress photos, where the classifiers differ." loading="lazy"></a><figcaption>Confusion matrices on the stress photos, where the classifiers differ.</figcaption></figure>
 <div class="tablewrap"><table>
 <caption>HOG + SVM sliding-window detector</caption>
@@ -430,8 +445,9 @@ earlier special-purpose pipelines also scored low on MeasureBench.</div>
 <tr><td class="">Test photos</td><td class="num">145</td><td class="num">0.99</td><td class="num">100</td><td class="num">290</td><td class="num">886</td></tr>
 <tr><td class="">Stress photos</td><td class="num">91</td><td class="num">0.97</td><td class="num">100</td><td class="num">290</td><td class="num">886</td></tr>
 </tbody></table></div>
-<div class="two"><figure><a href="figures/stage9_detector_pr.png"><img src="figures/stage9_detector_pr.png" alt="Detector precision and recall." loading="lazy"></a><figcaption>Detector precision and recall.</figcaption></figure><figure><a href="figures/week10_hog.png"><img src="figures/week10_hog.png" alt="HOG cells and sliding-window detections." loading="lazy"></a><figcaption>HOG cells and sliding-window detections.</figcaption></figure></div>
+<div class="two"><figure><a href="figures/stage9_detector_pr.png"><img src="figures/stage9_detector_pr.png" alt="Detector precision and recall." loading="lazy"></a><figcaption>Detector precision and recall.</figcaption></figure><figure><a href="figures/hog_detector.png"><img src="figures/hog_detector.png" alt="HOG cells and sliding-window detections." loading="lazy"></a><figcaption>HOG cells and sliding-window detections.</figcaption></figure></div>
 <h3>Stage 10: register to a reference photo, and stitch a panel</h3>
+<figure><a href="figures/sift_matches.png"><img src="figures/sift_matches.png" alt="SIFT matches between a new tilted photo and the stored reference." loading="lazy"></a><figcaption>SIFT matches between a new tilted photo and the stored reference.</figcaption></figure>
 <figure><a href="figures/stage10_registered.png"><img src="figures/stage10_registered.png" alt="A tilted photo is warped into the frame of a stored frontal reference, so Stages 2 and 3 are skipped." loading="lazy"></a><figcaption>A tilted photo is warped into the frame of a stored frontal reference, so Stages 2 and 3 are skipped.</figcaption></figure>
 <div class="tablewrap"><table>
 <caption>Reading through registration against reading through Stages 2 and 3, on the variation test photos</caption>
@@ -444,7 +460,7 @@ earlier special-purpose pipelines also scored low on MeasureBench.</div>
 <tr><td class="">tilt 40 deg, window light</td><td class="num">18</td><td class="num">77.78</td><td class="num">24.89</td><td class="num">72.22</td><td class="num">0.04</td><td class="num">0</td><td class="num">94.44</td><td class="num">0.34</td><td class="num">0</td><td class="num">94.44</td><td class="num">0.03</td></tr>
 <tr><td class="">all</td><td class="num">108</td><td class="num">96.3</td><td class="num">45.39</td><td class="num">91.67</td><td class="num">0.5</td><td class="num">1.01</td><td class="num">96.3</td><td class="num">0.57</td><td class="num">0.96</td><td class="num">96.3</td><td class="num">0.48</td></tr>
 </tbody></table></div>
-<figure><a href="figures/week12_stitching.png"><img src="figures/week12_stitching.png" alt="Two overlapping photos of a three-gauge panel stitched into one; each gauge is found by the HOG detector and read." loading="lazy"></a><figcaption>Two overlapping photos of a three-gauge panel stitched into one; each gauge is found by the HOG detector and read.</figcaption></figure>
+<figure><a href="figures/panel_stitching.png"><img src="figures/panel_stitching.png" alt="Two overlapping photos of a three-gauge panel stitched into one; each gauge is found by the HOG detector and read." loading="lazy"></a><figcaption>Two overlapping photos of a three-gauge panel stitched into one; each gauge is found by the HOG detector and read.</figcaption></figure>
 <div class="tablewrap"><table>
 <caption>Readings from the stitched panel</caption>
 <thead><tr><th class="">gauge</th><th class="num">true</th><th class="num">read</th><th class="">status</th><th class="num">error % FS</th></tr></thead><tbody>
@@ -453,6 +469,7 @@ earlier special-purpose pipelines also scored low on MeasureBench.</div>
 <tr><td class="">tyre_gauge</td><td class="num">22</td><td class="num">22</td><td class="">reliable</td><td class="num">0.002</td></tr>
 </tbody></table></div>
 <h3>Stage 11: compression for upload</h3>
+<figure><a href="figures/dct_codec.png"><img src="figures/dct_codec.png" alt="The hand-written codec on one 8x8 block and on the whole photo." loading="lazy"></a><figcaption>The hand-written codec on one 8x8 block and on the whole photo.</figcaption></figure>
 <figure><a href="figures/stage11_compression.png"><img src="figures/stage11_compression.png" alt="Left: readings that stay within one division. Middle: PSNR against compression ratio. The hand-written codec tracks the library encoder." loading="lazy"></a><figcaption>Left: readings that stay within one division. Middle: PSNR against compression ratio. The hand-written codec tracks the library encoder.</figcaption></figure>
 <div class="tablewrap"><table>
 <thead><tr><th class="num">quality factor</th><th class="num">photos</th><th class="num">own codec: compression ratio</th><th class="num">own codec: PSNR (dB)</th><th class="num">own codec: read within 1 division %</th><th class="num">own codec: mean error (% FS)</th><th class="num">library JPEG: compression ratio</th><th class="num">library JPEG: PSNR (dB)</th><th class="num">library JPEG: read within 1 division %</th><th class="num">library JPEG: mean error (% FS)</th></tr></thead><tbody>
@@ -469,7 +486,7 @@ earlier special-purpose pipelines also scored low on MeasureBench.</div>
 readings stay within one division is <b>10</b>, a compression ratio of about
 133:1 on these photos at 32.1 dB. Synthetic
 photos are smooth and compress more easily than real ones, so treat the ratio as optimistic.</div>
-<h3>Stage 1 study: noise and blur (week 5)</h3>
+<h3>Stage 1 study: noise and blur</h3>
 <div class="tablewrap"><table>
 <caption>Known blur and noise added to clean validation photos</caption>
 <thead><tr><th class="">degradation</th><th class="num">photos</th><th class="num">PSNR degraded (dB)</th><th class="num">PSNR after Stage 1 (dB)</th><th class="num">read within 1 division %, Stage 1 on</th><th class="num">read within 1 division %, Stage 1 off</th><th class="">steps applied</th></tr></thead><tbody>
@@ -525,22 +542,6 @@ raises the score. The truly best kernel in the bank is <code>gaussian sigma=2.0<
 <tr><td class="">out_of_range</td><td class="">needle is outside the scale</td><td class="">larger</td><td class="num">1</td><td class="num">1</td></tr>
 <tr><td class="">sentinel</td><td class="">VLM coarse reading disagrees (gross-error sentinel)</td><td class="">larger</td><td class="num">1</td><td class="num">1</td></tr>
 </tbody></table></div>
-<h2 id="weeks">The 14 lab weeks</h2><p>Each lab program is one module of the project. Click a figure to enlarge it.</p><div class="weeks">
-<div class="week"><h4>Week 1: SciPy and matrix arithmetic</h4><p><code>dialreader/w01_matrix.py</code><br>Rotation, affine and homography matrices, a DLT homography solver, the polar sampling grid.</p><a href="figures/week01_matrix.png"><img src="figures/week01_matrix.png" alt="week 1" loading="lazy"></a></div>
-<div class="week"><h4>Week 2: Image attributes and negation</h4><p><code>dialreader/w02_attributes.py</code><br>Dataset loader, image attributes, histograms, and the negative that turns a dark dial face into a light one.</p><a href="figures/week02_attributes.png"><img src="figures/week02_attributes.png" alt="week 2" loading="lazy"></a></div>
-<div class="week"><h4>Week 3: 2D and 3D transformations</h4><p><code>dialreader/w03_geometry.py</code><br>Stage 3: ellipse to circle (affine), a circle-preserving homography, and a four-corner homography.</p><a href="figures/week03_rectify.png"><img src="figures/week03_rectify.png" alt="week 3" loading="lazy"></a></div>
-<div class="week"><h4>Week 4: Enhancement with filters and histograms</h4><p><code>dialreader/w04_enhance.py</code><br>Stage 1 contrast: histogram equalisation written out, CLAHE, smoothing and sharpening.</p><a href="figures/week04_histograms.png"><img src="figures/week04_histograms.png" alt="week 4" loading="lazy"></a></div>
-<div class="week"><h4>Week 5: Linear and non-linear filters</h4><p><code>dialreader/w05_restore.py</code><br>Stage 1: Gaussian and median denoising, Wiener deblurring, blur kernel from the cepstrum, glare mask.</p><a href="figures/week05_restoration.png"><img src="figures/week05_restoration.png" alt="week 5" loading="lazy"></a></div>
-<div class="week"><h4>Week 6: Image segmentation</h4><p><code>dialreader/w06_segment.py</code><br>Otsu thresholding written out and region growing: the needle mask and the glare mask.</p><a href="figures/week06_segmentation.png"><img src="figures/week06_segmentation.png" alt="week 6" loading="lazy"></a></div>
-<div class="week"><h4>Week 7: Image compression</h4><p><code>dialreader/w07_compress.py</code><br>Stage 11: 8x8 DCT, quantisation, zigzag, run-length and Huffman coding, against library JPEG.</p><a href="figures/week07_compression.png"><img src="figures/week07_compression.png" alt="week 7" loading="lazy"></a></div>
-<div class="week"><h4>Week 8: Morphological opening and closing</h4><p><code>dialreader/w08_morphology.py</code><br>Mask cleanup, black-hat tick extraction and the morphological skeleton of the needle.</p><a href="figures/week08_morphology.png"><img src="figures/week08_morphology.png" alt="week 8" loading="lazy"></a></div>
-<div class="week"><h4>Week 9: Canny edge detection</h4><p><code>dialreader/w09_detect.py</code><br>Canny step by step, Hough circle, RANSAC ellipse, tick DFT and comb, Hough line: classical v1.</p><a href="figures/week09_detectors.png"><img src="figures/week09_detectors.png" alt="week 9" loading="lazy"></a></div>
-<div class="week"><h4>Week 10: HOG</h4><p><code>dialreader/w10_hog.py</code><br>Stage 9: HOG written out, a linear SVM and a sliding window find the gauge in a cluttered scene.</p><a href="figures/week10_hog.png"><img src="figures/week10_hog.png" alt="week 10" loading="lazy"></a></div>
-<div class="week"><h4>Week 11: SIFT interest points</h4><p><code>dialreader/w11_sift.py</code><br>Stage 10: SIFT matches with the ratio test, between a new photo and a stored reference.</p><a href="figures/week11_sift.png"><img src="figures/week11_sift.png" alt="week 11" loading="lazy"></a></div>
-<div class="week"><h4>Week 12: Image stitching panorama</h4><p><code>dialreader/w12_stitch.py</code><br>RANSAC homography and feathered blending join two photos of a three-gauge panel.</p><a href="figures/week12_stitching.png"><img src="figures/week12_stitching.png" alt="week 12" loading="lazy"></a></div>
-<div class="week"><h4>Week 13: LBP</h4><p><code>dialreader/w13_lbp.py</code><br>Stage 9: uniform local binary patterns over a grid of cells classify the gauge type.</p><a href="figures/week13_lbp.png"><img src="figures/week13_lbp.png" alt="week 13" loading="lazy"></a></div>
-<div class="week"><h4>Week 14: Image classification with Bag of Words</h4><p><code>dialreader/w14_bow.py</code><br>Stage 9: k-means visual words on SIFT descriptors, word histograms and an SVM.</p><a href="figures/week14_bow.png"><img src="figures/week14_bow.png" alt="week 14" loading="lazy"></a></div>
-</div>
 <h2 id="limits">Negative results, limits and changes from the plan</h2>
 <h3>What did not work</h3><ul>
 <li>Hook 2 (sentinel) added false alarms and caught nothing Stage 8 had not already caught.</li>

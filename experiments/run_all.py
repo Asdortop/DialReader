@@ -1,6 +1,6 @@
 """Regenerate every result, in order.
 
-    python experiments/run_all.py            classical experiments, lab figures, report
+    python experiments/run_all.py            classical experiments, figures, report
     python experiments/run_all.py --genai    also the GenAI experiments (needs a key in .env)
 
 The dataset step is skipped when data/synthetic already exists; delete it to re-render.
@@ -25,7 +25,7 @@ STEPS = [
     ("stage9_recognition.py", [], True),
     ("stage10_registration.py", [], True),
     ("stage11_compression.py", [], True),
-    ("weekly_demos.py", [], True),
+    ("technique_figures.py", [], True),
     ("build_report.py", [], True),
 ]
 

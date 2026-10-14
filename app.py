@@ -14,7 +14,7 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from dialreader import pipeline, synth, uncertainty as unc, viz, w02_attributes as attrs
+from dialreader import pipeline, synth, uncertainty as unc, viz, attributes as attrs
 from dialreader.hooks import repair
 from dialreader.hooks.run import read_with_hooks
 from dialreader.hooks.vlm import VLM
@@ -153,7 +153,7 @@ with st.sidebar.expander("Switch off a classical stage"):
 
 # ------------------------------------------------------------------ pages
 
-tab_read, tab_weeks, tab_exp, tab_about = st.tabs(["Read a dial", "Lab weeks 1 to 14", "Experiments E1 to E6", "About"])
+tab_read, tab_stages, tab_exp, tab_about = st.tabs(["Read a dial", "How each stage works", "Experiments E1 to E6", "About"])
 
 with tab_read:
     if img is None:
@@ -273,28 +273,31 @@ with tab_read:
                 st.write(f"Needle at {100 * cal['fraction']:.1f} % of the scale. Smallest division "
                          f"{cal['division']:.3g}; error bar = slope x angle spread + half a division.")
 
-with tab_weeks:
-    st.caption("Each lab program is one module of the project. Figures come from experiments/weekly_demos.py and "
-               "the optional-stage scripts.")
-    WEEKS = [
-        (1, "SciPy and matrix arithmetic", "w01_matrix.py", ["week01_matrix.png"], []),
-        (2, "Image attributes and negation", "w02_attributes.py", ["week02_attributes.png"], ["week02_dataset_statistics"]),
-        (3, "2D and 3D transformations", "w03_geometry.py", ["week03_rectify.png", "week03_unwrap.png"], []),
-        (4, "Enhancement with filters and histograms", "w04_enhance.py", ["week04_histograms.png", "week04_filters.png"], []),
-        (5, "Linear and non-linear filters", "w05_restore.py", ["week05_restoration.png", "week05_blur_kernel.png"],
-         ["week05_restoration", "week05_kernel_selection"]),
-        (6, "Image segmentation", "w06_segment.py", ["week06_segmentation.png", "week06_glare.png"], []),
-        (7, "Image compression", "w07_compress.py", ["week07_compression.png", "stage11_compression.png"], ["stage11_compression"]),
-        (8, "Morphological opening and closing", "w08_morphology.py", ["week08_blackhat.png", "week08_morphology.png"], []),
-        (9, "Canny edge detection", "w09_detect.py", ["week09_canny.png", "week09_detectors.png", "week09_tick_dft.png"], []),
-        (10, "HOG", "w10_hog.py", ["week10_hog.png", "stage9_detector_pr.png"], ["stage9_detector"]),
-        (11, "SIFT interest points", "w11_sift.py", ["week11_sift.png", "stage10_registered.png"], ["stage10_registration"]),
-        (12, "Image stitching panorama", "w12_stitch.py", ["week12_stitching.png"], ["stage10_stitched_panel"]),
-        (13, "LBP", "w13_lbp.py", ["week13_lbp.png"], ["stage9_classifiers"]),
-        (14, "Image classification with Bag of Words", "w14_bow.py", ["week14_bow.png", "stage9_confusion.png"], []),
+with tab_stages:
+    st.caption("The techniques behind each stage, shown on example photos. Figures come from "
+               "experiments/technique_figures.py and the optional-stage scripts.")
+    STAGES = [
+        ("Stage 1: restore the photo", "enhance.py, restore.py",
+         ["contrast_histograms.png", "smoothing_sharpening.png", "restoration.png", "blur_kernel.png"],
+         ["restoration_study", "kernel_selection"]),
+        ("Stage 2: find the dial face", "detect.py", ["canny_steps.png", "dial_detectors.png"], []),
+        ("Stages 3 and 4: undo the tilt, unwrap into a strip", "geometry.py, attributes.py",
+         ["tilt_correction.png", "polar_unwrap.png", "face_negation.png"], []),
+        ("Stage 5: tick marks", "morphology.py, detect.py", ["tick_blackhat.png", "tick_dft.png"], []),
+        ("Stage 6: the needle", "segment.py, morphology.py",
+         ["needle_segmentation.png", "glare_mask.png", "mask_cleanup.png"], []),
+        ("Stage 9: find the gauge and recognise its type", "hog.py, lbp.py, bow.py",
+         ["hog_detector.png", "stage9_detector_pr.png", "lbp_texture.png", "bag_of_words.png", "stage9_confusion.png"],
+         ["stage9_detector", "stage9_classifiers"]),
+        ("Stage 10: register to a reference, stitch a panel", "sift.py, stitch.py",
+         ["sift_matches.png", "stage10_registered.png", "panel_stitching.png"],
+         ["stage10_registration", "stage10_stitched_panel"]),
+        ("Stage 11: compression for upload", "compress.py", ["dct_codec.png", "stage11_compression.png"],
+         ["stage11_compression"]),
+        ("Shared tools", "matrix.py, attributes.py", ["matrix_toolkit.png"], ["dataset_statistics"]),
     ]
-    for week, title, module, figs, tables in WEEKS:
-        with st.expander(f"Week {week}: {title}  (dialreader/{module})"):
+    for title, modules, figs, tables in STAGES:
+        with st.expander(f"{title}  (dialreader/{modules})"):
             for f in figs:
                 figure(f)
             for t in tables:

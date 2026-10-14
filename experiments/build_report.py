@@ -152,44 +152,43 @@ figcaption{font-size:13px;color:var(--ink2);margin-top:4px;max-width:90ch}
 .callout{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;
 padding:10px 14px;margin:14px 0;max-width:86ch}
 .callout.neg{border-left-color:var(--bad)} .callout.note{border-left-color:var(--warn)}
-.weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px}
-.week{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}
-.week h4{margin:0 0 2px;font-size:14.5px} .week p{font-size:13px;color:var(--ink2);margin:2px 0 8px}
-.week img{width:100%;border:1px solid var(--line);border-radius:6px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}
+.card h4{margin:0 0 2px;font-size:14.5px} .card p{font-size:13px;color:var(--ink2);margin:2px 0 8px}
+.card img{width:100%;border:1px solid var(--line);border-radius:6px}
 .missing{color:var(--bad);font-size:13px} code{background:#f0efec;padding:1px 5px;border-radius:4px;font-size:13px}
 details{margin:10px 0 14px} summary{cursor:pointer;color:var(--accent);font-size:13.5px;padding:4px 0}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px}
 """
 
-WEEKS = [
-    (1, "SciPy and matrix arithmetic", "w01_matrix.py", "week01_matrix.png",
-     "Rotation, affine and homography matrices, a DLT homography solver, the polar sampling grid."),
-    (2, "Image attributes and negation", "w02_attributes.py", "week02_attributes.png",
-     "Dataset loader, image attributes, histograms, and the negative that turns a dark dial face into a light one."),
-    (3, "2D and 3D transformations", "w03_geometry.py", "week03_rectify.png",
-     "Stage 3: ellipse to circle (affine), a circle-preserving homography, and a four-corner homography."),
-    (4, "Enhancement with filters and histograms", "w04_enhance.py", "week04_histograms.png",
-     "Stage 1 contrast: histogram equalisation written out, CLAHE, smoothing and sharpening."),
-    (5, "Linear and non-linear filters", "w05_restore.py", "week05_restoration.png",
-     "Stage 1: Gaussian and median denoising, Wiener deblurring, blur kernel from the cepstrum, glare mask."),
-    (6, "Image segmentation", "w06_segment.py", "week06_segmentation.png",
-     "Otsu thresholding written out and region growing: the needle mask and the glare mask."),
-    (7, "Image compression", "w07_compress.py", "week07_compression.png",
-     "Stage 11: 8x8 DCT, quantisation, zigzag, run-length and Huffman coding, against library JPEG."),
-    (8, "Morphological opening and closing", "w08_morphology.py", "week08_morphology.png",
-     "Mask cleanup, black-hat tick extraction and the morphological skeleton of the needle."),
-    (9, "Canny edge detection", "w09_detect.py", "week09_detectors.png",
-     "Canny step by step, Hough circle, RANSAC ellipse, tick DFT and comb, Hough line: classical v1."),
-    (10, "HOG", "w10_hog.py", "week10_hog.png",
-     "Stage 9: HOG written out, a linear SVM and a sliding window find the gauge in a cluttered scene."),
-    (11, "SIFT interest points", "w11_sift.py", "week11_sift.png",
-     "Stage 10: SIFT matches with the ratio test, between a new photo and a stored reference."),
-    (12, "Image stitching panorama", "w12_stitch.py", "week12_stitching.png",
-     "RANSAC homography and feathered blending join two photos of a three-gauge panel."),
-    (13, "LBP", "w13_lbp.py", "week13_lbp.png",
-     "Stage 9: uniform local binary patterns over a grid of cells classify the gauge type."),
-    (14, "Image classification with Bag of Words", "w14_bow.py", "week14_bow.png",
-     "Stage 9: k-means visual words on SIFT descriptors, word histograms and an SVM."),
+STAGE_FIGURES = [
+    ("Stage 1: restore", "enhance.py", "contrast_histograms.png",
+     "Histogram equalisation written out, and CLAHE, to fix contrast before anything is measured."),
+    ("Stage 1: restore", "restore.py", "restoration.png",
+     "Median filter for impulse noise, Gaussian for sensor noise, Wiener deblurring with a kernel estimated from the "
+     "photo's own edges, and a glare mask."),
+    ("Stage 2: find the dial", "detect.py", "canny_steps.png",
+     "Canny step by step: gradients, non-maximum suppression and hysteresis, with thresholds set from the image."),
+    ("Stage 2: find the dial", "detect.py", "dial_detectors.png",
+     "A Hough circle gives a coarse rim, a RANSAC ellipse fits it while ignoring outlier edges; the tick comb and "
+     "a Hough line complete a first end-to-end reading."),
+    ("Stage 3: undo the tilt", "geometry.py", "tilt_correction.png",
+     "The fitted ellipse is mapped back to a circle by an affine transform, then a circle-preserving homography "
+     "removes the perspective that is left."),
+    ("Stage 4: unwrap", "geometry.py", "polar_unwrap.png",
+     "A polar transform turns the round dial into a strip: ticks become vertical marks and the needle one vertical line."),
+    ("Stage 4: unwrap", "attributes.py", "face_negation.png",
+     "Taking the negative of a light-on-dark face lets one tick detector serve both kinds of dial."),
+    ("Stage 5: ticks", "morphology.py", "tick_blackhat.png",
+     "A black-hat transform pulls out the thin dark tick marks and suppresses the printed numbers and the face."),
+    ("Stage 5: ticks", "detect.py", "tick_dft.png",
+     "The tick profile's DFT and autocorrelation give the spacing; a comb fit places every tick and bridges gaps."),
+    ("Stage 6: needle", "segment.py", "needle_segmentation.png",
+     "Otsu thresholding on colour and tone channels separates the needle from the dial face."),
+    ("Stage 6: needle", "morphology.py", "mask_cleanup.png",
+     "Opening and closing clean the mask; the skeleton gives a thin line for the angle fit."),
+    ("All stages", "matrix.py", "matrix_toolkit.png",
+     "The rotation, affine and homography matrices, homography solver and polar sampling grid every stage uses."),
 ]
 
 
@@ -197,10 +196,10 @@ def build():
     e1, e2, e2v, e5 = load("e1_stage_ablation"), load("e2_robustness"), load("e2_robustness_vlm"), load("e5_generalisation")
     ladder, h1, h3, e4 = load("e3_genai_ladder"), load("e3_hook1_scale_parser"), load("e3_hook3_repair"), load("e4_sentinel")
     e6, e6i = load("e6_measurebench"), load("e6_measurebench_per_image")
-    thr, w5, w5k = load("stage8_thresholds"), load("week05_restoration"), load("week05_kernel_selection")
+    thr, rs, ks = load("stage8_thresholds"), load("restoration_study"), load("kernel_selection")
     s9c, s9d, s10, s10p, s11 = (load("stage9_classifiers"), load("stage9_detector"), load("stage10_registration"),
                                 load("stage10_stitched_panel"), load("stage11_compression"))
-    stats = load("week02_dataset_statistics")
+    stats = load("dataset_statistics")
     gen = json.loads((RESULTS / "genai_summary.json").read_text()) if (RESULTS / "genai_summary.json").exists() else {}
     client = VLM()
     spend, n_calls = client.spent_total(), 0          # every live call ever made, from the call log
@@ -235,9 +234,9 @@ generated {datetime.date.today():%d %B %Y}</p>
 <p class="lede">DialReader reads an analogue dial gauge from one photo with classical image processing, gives the value
 with an error bar, and says "unreliable" instead of guessing. GenAI is used at three narrow points only, each one
 tested against the classical pipeline. This page shows what was built and what was measured.</p>
-<nav><a href="#summary">Summary</a><a href="#pipeline">Pipeline</a><a href="#data">Data</a><a href="#e1">E1 stages</a>
+<nav><a href="#summary">Summary</a><a href="#pipeline">Pipeline</a><a href="#stages">How each stage works</a><a href="#data">Data</a><a href="#e1">E1 stages</a>
 <a href="#e2">E2 robustness</a><a href="#genai">E3-E4 GenAI hooks</a><a href="#e5">E5 unseen gauges</a>
-<a href="#e6">E6 public photos</a><a href="#optional">Stages 9-11</a><a href="#weeks">Lab weeks</a>
+<a href="#e6">E6 public photos</a><a href="#optional">Stages 9-11</a>
 <a href="#limits">Limits</a><a href="#run">How to run</a></nav>""")
 
     # ------------------------------------------------------------ summary
@@ -277,7 +276,7 @@ as the MeasureBench result shows.</li>
 
     # ------------------------------------------------------------ pipeline
     P.append('<h2 id="pipeline">The pipeline</h2>')
-    P.append("""<p>Eight classical stages do every measurement. Each stage is one or more lab programs.</p>
+    P.append("""<p>Eight classical stages do every measurement.</p>
 <div class="tablewrap"><table><thead><tr><th>Stage</th><th>What it does</th><th>Techniques</th></tr></thead><tbody>
 <tr><td>1 Restore</td><td>Denoise, deblur, fix contrast, mask glare</td><td>Median and Gaussian filters, Wiener filter, cepstrum, CLAHE, unsharp mask</td></tr>
 <tr><td>2 Find the dial</td><td>Coarse circle, then an ellipse that ignores outlier edges</td><td>Canny with adaptive thresholds, Hough circle, RANSAC ellipse</td></tr>
@@ -299,6 +298,15 @@ them off.</p>
 <tr><td>3 Repair loop</td><td>After Stage 8, unreliable photos only</td><td>Looks at three overlays and picks one action from a fixed menu</td><td>The pipeline reruns and Stage 8 judges the result; the VLM never outputs a number</td></tr>
 </tbody></table></div>""")
 
+    # ------------------------------------------------------------ how each stage works
+    P.append('<h2 id="stages">How each stage works</h2><p>One photo through the techniques behind Stages 1 to 6. '
+             'Click a figure to enlarge it.</p><div class="gallery">')
+    for stage, module, figure, text in STAGE_FIGURES:
+        img = (f'<a href="figures/{figure}"><img src="figures/{figure}" alt="{html.escape(stage)}" loading="lazy"></a>'
+               if (FIGS / figure).exists() else '<p class="missing">figure not generated yet</p>')
+        P.append(f'<div class="card"><h4>{stage}</h4><p>{text}<br><code>dialreader/{module}</code></p>{img}</div>')
+    P.append("</div>")
+
     # ------------------------------------------------------------ data
     P.append('<h2 id="data">Data and ground truth</h2>')
     P.append(f"""<p>{n_photos} synthetic photos follow the plan's collection protocol: a base set of 10 readings for each
@@ -309,7 +317,7 @@ tilt, in-plane roll, uneven light, glare, lens blur, sensor noise and JPEG compr
 <li><b>Test split</b> (182 photos): includes two gauge types, barometer and speedometer, held out entirely.</li>
 <li><b>Stress set</b> (182 photos): the test split with one severe degradation each, to supply hard cases.</li>
 <li><b>MeasureBench subset</b> (21 photos): public real-world photos, filtered by hand to single-needle circular dials.</li></ul>""")
-    P.append(table(stats, caption="Week 2 output: dataset statistics per gauge type"))
+    P.append(table(stats, caption="Dataset statistics per gauge type"))
 
     # ------------------------------------------------------------ E1
     P.append('<h2 id="e1">E1: does each classical stage matter?</h2>')
@@ -495,16 +503,20 @@ earlier special-purpose pipelines also scored low on MeasureBench.</div>""")
     P.append("<h3>Stage 9: recognise the gauge type and find the gauge</h3>")
     P.append(table(s9c, caption="Gauge-type classification on rectified dial faces (11 types). Stage 9 uses its own split, "
                                 "even readings to train and odd to test, because a classifier cannot name a held-out type."))
+    P.append('<div class="two">' + fig("lbp_texture.png", "Local binary patterns: texture codes of a dial face.")
+             + fig("bag_of_words.png", "Bag of Words: SIFT descriptors clustered into visual words.") + "</div>")
     P.append(fig("stage9_confusion.png", "Confusion matrices on the stress photos, where the classifiers differ."))
     P.append(table(s9d, caption="HOG + SVM sliding-window detector"))
     P.append('<div class="two">' + fig("stage9_detector_pr.png", "Detector precision and recall.")
-             + fig("week10_hog.png", "HOG cells and sliding-window detections.") + "</div>")
+             + fig("hog_detector.png", "HOG cells and sliding-window detections.") + "</div>")
     P.append("<h3>Stage 10: register to a reference photo, and stitch a panel</h3>")
+    P.append(fig("sift_matches.png", "SIFT matches between a new tilted photo and the stored reference."))
     P.append(fig("stage10_registered.png", "A tilted photo is warped into the frame of a stored frontal reference, so Stages 2 and 3 are skipped."))
     P.append(table(s10, caption="Reading through registration against reading through Stages 2 and 3, on the variation test photos"))
-    P.append(fig("week12_stitching.png", "Two overlapping photos of a three-gauge panel stitched into one; each gauge is found by the HOG detector and read."))
+    P.append(fig("panel_stitching.png", "Two overlapping photos of a three-gauge panel stitched into one; each gauge is found by the HOG detector and read."))
     P.append(table(s10p, caption="Readings from the stitched panel"))
     P.append("<h3>Stage 11: compression for upload</h3>")
+    P.append(fig("dct_codec.png", "The hand-written codec on one 8x8 block and on the whole photo."))
     P.append(fig("stage11_compression.png", "Left: readings that stay within one division. Middle: PSNR against compression ratio. "
                                             "The hand-written codec tracks the library encoder."))
     P.append(table(s11))
@@ -518,30 +530,22 @@ readings stay within one division is <b>{int(low['quality factor'])}</b>, a comp
 photos are smooth and compress more easily than real ones, so treat the ratio as optimistic.</div>""")
 
     # ------------------------------------------------------------ restoration study + thresholds
-    P.append("<h3>Stage 1 study: noise and blur (week 5)</h3>")
-    P.append(table(w5, caption="Known blur and noise added to clean validation photos"))
-    if w5k is not None:
-        lap = w5k[w5k["chosen by"].astype(str).str.contains("Laplacian")].iloc[0]
-        best = w5k[w5k["chosen by"].astype(str).str.contains("best PSNR")].iloc[0]
-        used = w5k[w5k["chosen by"].astype(str).str.contains("Stage 1")].iloc[0]
-        base = w5k.iloc[0]
+    P.append("<h3>Stage 1 study: noise and blur</h3>")
+    P.append(table(rs, caption="Known blur and noise added to clean validation photos"))
+    if ks is not None:
+        lap = ks[ks["chosen by"].astype(str).str.contains("Laplacian")].iloc[0]
+        best = ks[ks["chosen by"].astype(str).str.contains("best PSNR")].iloc[0]
+        used = ks[ks["chosen by"].astype(str).str.contains("Stage 1")].iloc[0]
+        base = ks.iloc[0]
         P.append(f"""<div class="callout note"><b>A finding against the plan.</b> The plan chooses the deblurring kernel by the highest
 variance of the Laplacian. On a photo blurred with sigma = 2, that rule picks <code>{lap['kernel']}</code>, which
 takes the photo from {base['PSNR vs sharp photo (dB)']:.1f} dB down to {lap['PSNR vs sharp photo (dB)']:.1f} dB: ringing
 raises the score. The truly best kernel in the bank is <code>{best['kernel']}</code>
 ({best['PSNR vs sharp photo (dB)']:.1f} dB). Stage 1 instead estimates the blur from the photo's own edges and reaches
 {used['PSNR vs sharp photo (dB)']:.1f} dB ({used['kernel'].split(': ')[-1]}).</div>""")
-    P.append(table(w5k, collapse="Every kernel in the bank, scored on that photo"))
+    P.append(table(ks, collapse="Every kernel in the bank, scored on that photo"))
     P.append("<h3>Stage 8 thresholds</h3>")
     P.append(table(thr, caption="Each threshold sits just outside the range that correct validation readings occupy"))
-
-    # ------------------------------------------------------------ weeks
-    P.append('<h2 id="weeks">The 14 lab weeks</h2><p>Each lab program is one module of the project. Click a figure to enlarge it.</p><div class="weeks">')
-    for week, title, module, figure, text in WEEKS:
-        img = (f'<a href="figures/{figure}"><img src="figures/{figure}" alt="week {week}" loading="lazy"></a>'
-               if (FIGS / figure).exists() else '<p class="missing">figure not generated yet</p>')
-        P.append(f'<div class="week"><h4>Week {week}: {title}</h4><p><code>dialreader/{module}</code><br>{text}</p>{img}</div>')
-    P.append("</div>")
 
     # ------------------------------------------------------------ limits
     P.append('<h2 id="limits">Negative results, limits and changes from the plan</h2>')

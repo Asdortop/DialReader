@@ -13,13 +13,13 @@ import cv2
 import numpy as np
 from scipy.ndimage import gaussian_filter1d
 
-from . import w01_matrix as mx
-from . import w02_attributes as attrs
-from . import w03_geometry as geo
-from . import w05_restore as restore
-from . import w06_segment as seg
-from . import w08_morphology as morph
-from . import w09_detect as det
+from . import matrix as mx
+from . import attributes as attrs
+from . import geometry as geo
+from . import restore
+from . import segment as seg
+from . import morphology as morph
+from . import detect as det
 from . import calibrate as cal
 from . import uncertainty as unc
 

@@ -14,7 +14,7 @@ import numpy as np
 from joblib import Parallel, delayed
 
 from common import SYNTH, save_table
-from dialreader import synth, w02_attributes as attrs
+from dialreader import synth, attributes as attrs
 
 import pandas as pd
 
@@ -79,12 +79,12 @@ if __name__ == "__main__":
     print(f"wrote {len(df)} photos to {SYNTH}")
     print(df.groupby(["set", "split"]).size().unstack(fill_value=0))
 
-    # Week 2 output: the dataset statistics table (image attributes per gauge type).
+    # The dataset statistics table (image attributes per gauge type).
     stats = pd.DataFrame([dict(attrs.image_attributes(SYNTH / r["file"]), gauge=r["gauge"], set=r["set"],
                                split=r["split"], phone=r["phone"]) for r in rows])
     table = stats.groupby("gauge").agg(photos=("file", "count"), width=("width", "first"),
                                        height=("height", "first"), mean_grey=("mean", "mean"),
                                        std_grey=("std", "mean"), entropy_bits=("entropy_bits", "mean"),
                                        bright_fraction=("bright_fraction", "mean")).reset_index()
-    save_table(table.round(3), "week02_dataset_statistics")
+    save_table(table.round(3), "dataset_statistics")
     print(table.round(2).to_string(index=False))

@@ -11,13 +11,13 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from dialreader import calibrate as cal, pipeline, synth, uncertainty as unc
-from dialreader import w01_matrix as mx, w03_geometry as geo, w06_segment as seg, w07_compress as codec
-from dialreader import w09_detect as det
+from dialreader import calibrate as cal, gauges, pipeline, synth, uncertainty as unc
+from dialreader import matrix as mx, geometry as geo, segment as seg, compress as codec
+from dialreader import detect as det
 from dialreader.hooks import scale_parser, sentinel
 
 
-# ---------------------------------------------------------------- week 1: matrix toolkit
+# ---------------------------------------------------------------- matrix toolkit
 
 def test_compose_applies_left_to_right():
     M = mx.compose(mx.translation(1, 0), mx.rotation(90))
@@ -171,3 +171,45 @@ def test_sentinel_flags_only_large_disagreement():
     assert sentinel.check(5.4, R, scale, threshold_fs=15.0) < 1.0
     assert sentinel.check(8.0, R, scale, threshold_fs=15.0) > 1.0
     assert sentinel.check(None, R, scale) is None
+
+
+# ---------------------------------------------------------------- gauge presets and the scale check
+
+def _ticks(n_major_intervals, period=5):
+    is_major = np.zeros(n_major_intervals * period + 1, bool)
+    is_major[::period] = True
+    return {"is_major": is_major}
+
+
+@pytest.mark.parametrize("vmin, vmax, kind, intervals", [
+    (0, 10, "linear", 10), (-20, 120, "linear", 7), (960, 1060, "linear", 10), (50, 300, "linear", 5),
+    (0, 25, "linear", 10), (0.1, 1000, "log", 4),
+])
+def test_scale_check_accepts_ranges_that_fit_the_major_ticks(vmin, vmax, kind, intervals):
+    check = gauges.scale_check({"vmin": vmin, "vmax": vmax, "scale_type": kind}, _ticks(intervals))
+    assert check["checked"] and check["ok"]
+
+
+@pytest.mark.parametrize("vmin, vmax, kind, intervals", [
+    (0, 16, "linear", 10),         # wrong range: 1.6 per major
+    (0, 120, "linear", 7),         # wrong lower end: 17.1 per major
+    (0.1, 1000, "linear", 4),      # a log scale entered as linear
+    (0, 10, "log", 10),            # a log scale cannot start at zero
+])
+def test_scale_check_rejects_ranges_that_do_not_fit(vmin, vmax, kind, intervals):
+    check = gauges.scale_check({"vmin": vmin, "vmax": vmax, "scale_type": kind}, _ticks(intervals))
+    assert check["checked"] and not check["ok"]
+
+
+def test_scale_check_suggests_preset_ranges_and_skips_unclear_ticks():
+    check = gauges.scale_check({"vmin": 0, "vmax": 16, "scale_type": "linear"}, _ticks(10),
+                               gauges.PRESETS["pressure_gauge"])
+    assert [0, 10] in check["suggestions"] and [0, 16] not in check["suggestions"]
+    assert not gauges.scale_check({"vmin": 0, "vmax": 10}, {"is_major": None})["checked"]
+
+
+def test_every_preset_default_range_is_valid():
+    for p in gauges.PRESETS.values():
+        s = p.scale()
+        assert s["vmin"] < s["vmax"] and s["direction"] in ("clockwise", "anticlockwise")
+        assert s["scale_type"] in ("linear", "log") and (s["scale_type"] == "linear" or s["vmin"] > 0)

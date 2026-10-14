@@ -10,7 +10,7 @@ from dataclasses import dataclass, asdict
 import cv2
 import numpy as np
 
-from . import w01_matrix as mx
+from . import matrix as mx
 
 
 @dataclass(frozen=True)

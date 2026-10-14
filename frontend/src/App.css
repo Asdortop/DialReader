@@ -9,7 +9,7 @@
 .header-inner { max-width: 1200px; margin: auto; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
 
 .logo { display: flex; align-items: center; gap: 10px; }
-.logo-icon { font-size: 26px; filter: drop-shadow(0 0 8px var(--accent)); }
+.logo-icon { width: 28px; height: 28px; background: #fff; border-radius: 50%; }
 .logo-text { font-size: 22px; font-weight: 800; background: linear-gradient(135deg, #a78bfa, #6c63ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .header-sub { color: var(--text-muted); font-size: 13px; }
 
@@ -80,7 +80,8 @@
 
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-.field { display: flex; flex-direction: column; gap: 6px; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field input, .field select { width: 100%; }
 .field span { font-size: 12px; color: var(--text-muted); font-weight: 500; }
 .field em { color: var(--accent); font-style: normal; margin-left: 2px; }
 
@@ -310,3 +311,56 @@
   border-top: 1px solid var(--border);
   margin-top: 16px;
 }
+
+/* ── Gauge presets, scale source, checks ── */
+.api-down {
+  max-width: 1200px; margin: 20px auto 0; padding: 12px 16px; width: calc(100% - 48px);
+  background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.35); border-radius: 10px; color: #fca5a5; font-size: 14px;
+}
+.api-down code, .hint code { background: var(--bg); padding: 1px 6px; border-radius: 4px; }
+.sample-pick { margin-bottom: 18px; }
+.hint { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+.segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.segmented button {
+  background: var(--bg); border: none; color: var(--text-muted); cursor: pointer; font-family: inherit;
+  font-size: 13px; padding: 9px 10px; transition: background .15s, color .15s;
+}
+.segmented button + button { border-left: 1px solid var(--border); }
+.segmented button.on { background: var(--accent-glow); color: var(--text); font-weight: 600; }
+
+.chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.chips-label { font-size: 12px; color: var(--text-muted); margin-right: 2px; }
+.chip {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; color: var(--text);
+  cursor: pointer; font-family: inherit; font-size: 12px; padding: 4px 10px;
+}
+.chip:hover { border-color: var(--accent); }
+.chip.on { border-color: var(--accent); background: var(--accent-glow); }
+
+details.more { font-size: 13px; }
+details.more summary { cursor: pointer; color: var(--text-muted); padding: 4px 0; }
+details.more[open] summary { margin-bottom: 10px; }
+details.more .field + .row2, details.more .row2 { margin-top: 10px; }
+
+.gauge-tag { font-size: 12px; color: var(--text-muted); border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; }
+.truth, .scale-line { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+.truth strong { color: var(--text); }
+
+.check-ok, .check-bad { border-radius: 10px; padding: 10px 14px; font-size: 13px; margin-bottom: 14px; line-height: 1.5; }
+.check-ok { background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.25); color: #86efac; }
+.check-bad { background: rgba(245,158,11,.10); border: 1px solid rgba(245,158,11,.35); color: #fcd34d; }
+.check-bad .chips { margin-top: 8px; }
+
+ul.checks { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+ul.checks li { display: flex; gap: 8px; align-items: baseline; color: var(--text-muted); }
+ul.checks li.pass span { color: var(--green); }
+ul.checks li.fail { color: #fcd34d; }
+ul.checks li.fail span { color: var(--yellow); }
+ul.checks em { margin-left: auto; font-style: normal; font-size: 11px; color: #5c6070; white-space: nowrap; }
+
+.stage-caption { font-size: 14px; color: var(--text-muted); line-height: 1.55; margin: 14px 0 10px; }
+.stage-caption strong { color: var(--text); }
+.stage-nav { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-muted); }
+.stage-tab:disabled { opacity: .4; cursor: default; }
+.timing-total { font-size: 11px; color: #5c6070; margin-top: 8px; }

@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from common import load_synth, run, save_table, summarise
-from dialreader import uncertainty as unc, w02_attributes as attrs
+from dialreader import uncertainty as unc, attributes as attrs
 
 if __name__ == "__main__":
     val = load_synth(split="val")

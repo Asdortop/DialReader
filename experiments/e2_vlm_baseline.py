@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 from common import error_fs, load_synth
-from dialreader import degrade, w02_attributes as attrs
+from dialreader import degrade, attributes as attrs
 from dialreader.hooks import sentinel
 from dialreader.hooks.vlm import VLM
 

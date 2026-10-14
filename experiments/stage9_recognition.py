@@ -1,6 +1,6 @@
 """Stage 9 (optional) - Recognise the gauge type, and find the gauge in a cluttered scene.
 
-Weeks 10, 13 and 14: HOG + SVM detector, and three gauge-type classifiers
+HOG + SVM detector, and three gauge-type classifiers
 (HOG, LBP, Bag-of-Words on SIFT) compared on accuracy and confusion matrices.
 
 Run:  python experiments/stage9_recognition.py
@@ -16,8 +16,8 @@ from sklearn.metrics import confusion_matrix
 from sklearn.svm import LinearSVC
 
 from common import DATA, FIGS, RESULTS, SYNTH, load_synth, save_table
-from dialreader import pipeline, viz, w02_attributes as attrs, w03_geometry as geo
-from dialreader import w10_hog as hog, w13_lbp as lbp, w14_bow as bow
+from dialreader import pipeline, viz, attributes as attrs, geometry as geo
+from dialreader import hog, lbp, bow
 
 FACE = int(1.06 * geo.RECT_RADIUS)
 
@@ -173,7 +173,7 @@ if __name__ == "__main__":
     fig.savefig(FIGS / "stage9_detector_pr.png")
     save_table(pd.DataFrame(det_rows).round(2), "stage9_detector")
 
-    # ---- week figures
+    # ---- technique figures
     sample = attrs.read_image(test[3]["path"])
     boxes, scores = hog.detect(sample, clf, threshold=0.0, max_det=3)
     shown = sample.copy()
@@ -183,7 +183,7 @@ if __name__ == "__main__":
     patch = cv2.resize(cv2.cvtColor(crop(sample, truth_box(test[3])), cv2.COLOR_BGR2GRAY), (128, 128))
     viz.show_images([patch, hog.hog_image(patch), shown],
                     ["Gauge patch", "Its HOG cells (9 orientations each)", "Sliding-window detections"],
-                    suptitle="Week 10 - HOG + SVM gauge detector").savefig(FIGS / "week10_hog.png")
+                    suptitle="HOG + SVM gauge detector").savefig(FIGS / "hog_detector.png")
 
     face = cv2.cvtColor(f_test[0], cv2.COLOR_BGR2GRAY)
     codes = lbp.lbp_codes(cv2.resize(face, (128, 128)))
@@ -193,9 +193,9 @@ if __name__ == "__main__":
     hist = np.bincount(lbp.UNIFORM[codes].ravel(), minlength=lbp.N_BINS)
     axes[2].bar(range(lbp.N_BINS), hist / hist.sum(), color=viz.SERIES[0], width=0.8)
     axes[2].set(title="Uniform-LBP histogram (59 bins)", xlabel="pattern bin", ylabel="share of pixels")
-    fig.suptitle("Week 13 - Local binary patterns", x=0.01, ha="left", fontweight="semibold")
+    fig.suptitle("Local binary patterns", x=0.01, ha="left", fontweight="semibold")
     fig.tight_layout()
-    fig.savefig(FIGS / "week13_lbp.png")
+    fig.savefig(FIGS / "lbp_texture.png")
 
     model = bow.BagOfWords().fit(f_train, y_train)
     grey = cv2.cvtColor(f_test[0], cv2.COLOR_BGR2GRAY)
@@ -208,6 +208,6 @@ if __name__ == "__main__":
         ax.bar(range(model.n_words), model.histogram(bow.sift_descriptors(f_test[idx])), color=colour, width=0.9)
         ax.set(title=f"Visual-word histogram: {test[idx]['gauge'].replace('_', ' ')}", xlabel="visual word",
                ylabel="weight")
-    fig.suptitle("Week 14 - Bag of Words on SIFT descriptors", x=0.01, ha="left", fontweight="semibold")
+    fig.suptitle("Bag of Words on SIFT descriptors", x=0.01, ha="left", fontweight="semibold")
     fig.tight_layout()
-    fig.savefig(FIGS / "week14_bow.png")
+    fig.savefig(FIGS / "bag_of_words.png")

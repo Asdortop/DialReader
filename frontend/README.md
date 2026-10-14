@@ -1,16 +1,25 @@
-# React + Vite
+# DialReader frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A React + Vite page for the DialReader API: upload a gauge photo, enter the scale,
+and see the reading, its error bar, a safe-range alert and the main pipeline stages.
 
-Currently, two official plugins are available:
+## Run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Start the API from the repository root first:
 
-## React Compiler
+```
+pip install -r requirements.txt
+uvicorn api:app --reload --port 8000
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Then, in this folder:
 
-## Expanding the Oxlint configuration
+```
+npm install
+npm run dev          # http://localhost:5173
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+The page calls `http://localhost:8000` by default. To point it elsewhere, set
+`VITE_API_URL` (for example in `frontend/.env.local`). If the page is served from a
+different origin than `localhost:5173`, add that origin to `DIALREADER_CORS_ORIGINS`
+(comma-separated) before starting the API.

@@ -1,6 +1,6 @@
 """Stage 11 (optional) - How far can a dial photo be compressed before the reading degrades?
 
-Week 7: the hand-written DCT codec against the library JPEG encoder, with reading
+The hand-written DCT codec against the library JPEG encoder, with reading
 error against quality factor and PSNR against compression ratio.
 
 Run:  python experiments/stage11_compression.py
@@ -12,7 +12,7 @@ import pandas as pd
 from joblib import Parallel, delayed
 
 from common import FIGS, evaluate_image, load_synth, save_table
-from dialreader import viz, w02_attributes as attrs, w05_restore as restore, w07_compress as codec
+from dialreader import viz, attributes as attrs, restore, compress as codec
 
 QUALITIES = [90, 70, 50, 30, 20, 10, 5, 2]
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     fig.tight_layout()
     fig.savefig(FIGS / "stage11_compression.png")
 
-    # ---- week 7 figure: what the codec does to one 8x8 block and to the whole photo
+    # ---- figure: what the codec does to one 8x8 block and to the whole photo
     img = attrs.read_image(recs[0]["path"])
     grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     h, w = grey.shape
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         ax.imshow(viz.rgb(c)); ax.axis("off")
         ax.set_title(f"Own codec, quality {q}: {img.size / n:.0f}:1", fontsize=10)
     nz = int(np.count_nonzero(quant))
-    fig.suptitle(f"Week 7 - Image compression: 8x8 DCT, quantisation ({nz} of 64 coefficients survive at "
+    fig.suptitle(f"Image compression: 8x8 DCT, quantisation ({nz} of 64 coefficients survive at "
                  "quality 10), run-length coding", x=0.01, ha="left", fontweight="semibold")
     fig.tight_layout()
-    fig.savefig(FIGS / "week07_compression.png")
+    fig.savefig(FIGS / "dct_codec.png")

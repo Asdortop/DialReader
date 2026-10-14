@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 
 from common import DATA, FIGS, RESULTS, save_table
-from dialreader import pipeline, uncertainty as unc, viz, w02_attributes as attrs
+from dialreader import pipeline, uncertainty as unc, viz, attributes as attrs
 from dialreader.hooks import scale_parser, sentinel
 from dialreader.hooks.vlm import VLM
 

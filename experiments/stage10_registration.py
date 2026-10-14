@@ -1,6 +1,6 @@
 """Stage 10 (optional) - Register a new photo to a stored reference photo, and stitch a panel.
 
-Weeks 11 and 12: SIFT matches, RANSAC homography, reading through the reference
+SIFT matches, RANSAC homography, reading through the reference
 frame (Stages 2 and 3 skipped), and a stitched panorama of a multi-gauge panel.
 
 Run:  python experiments/stage10_registration.py
@@ -14,8 +14,8 @@ import pandas as pd
 from joblib import Parallel, delayed
 
 from common import FIGS, RESULTS, error_fs, load_synth, save_table
-from dialreader import pipeline, synth, viz, w02_attributes as attrs
-from dialreader import w10_hog as hog, w11_sift as sift, w12_stitch as stitch
+from dialreader import pipeline, synth, viz, attributes as attrs
+from dialreader import hog, sift, stitch
 
 MIN_INLIERS = 15
 
@@ -74,16 +74,16 @@ if __name__ == "__main__":
     df = save_table(pd.DataFrame(table).round(2), "stage10_registration")
     print(df.to_string(index=False))
 
-    # ---- week 11 figure: SIFT matches between a tilted photo and its reference
+    # ---- figure: SIFT matches between a tilted photo and its reference
     rec = next(r for r in test if abs(float(r["tilt_deg"]) - 40) < 1 and r["lighting"] == "room")
     ref_path, M_ref = refs[rec["gauge"]]
     img, ref = attrs.read_image(rec["path"]), attrs.read_image(ref_path)
     reg = sift.register(img, ref, MIN_INLIERS)
     panels = [sift.draw_matches(img, ref, reg["src"], reg["dst"], reg["inliers"])]
     titles = [f"SIFT matches after the ratio test: {reg['n_inliers']} RANSAC inliers (green) of {reg['n_matches']}"]
-    fig = viz.show_images(panels, titles, size=9, suptitle="Week 11 - SIFT interest points: new photo (left) "
+    fig = viz.show_images(panels, titles, size=9, suptitle="SIFT interest points: new photo (left) "
                                                              "matched to the reference photo (right)")
-    fig.savefig(FIGS / "week11_sift.png")
+    fig.savefig(FIGS / "sift_matches.png")
     if reg["H"] is not None:
         warped = cv2.warpPerspective(img, reg["H"], (ref.shape[1], ref.shape[0]))
         R = pipeline.read_dial(img, attrs.scale_of(rec), rectification=M_ref @ reg["H"])
@@ -92,7 +92,7 @@ if __name__ == "__main__":
                          f"Read through the reference (true {rec['value']:.2f})"],
                         suptitle="Stage 10 - registration replaces Stages 2 and 3").savefig(FIGS / "stage10_registered.png")
 
-    # ---- week 12: stitch two overlapping photos of a three-gauge panel, then read every gauge
+    # ---- stitch two overlapping photos of a three-gauge panel, then read every gauge
     gauges, values = ["pressure_gauge", "thermometer", "tyre_gauge"], [6.4, 37.0, 22.0]
     panel, placed = stitch.make_panel(gauges, values, seed=3)
     left, right = stitch.two_views(panel, seed=3)
@@ -131,10 +131,10 @@ if __name__ == "__main__":
         ax.imshow(viz.rgb(shown)); ax.axis("off")
         ax.set_title(f"Stitched panorama ({info['n_inliers']} RANSAC inliers); gauges found by the HOG detector "
                      "and read by the pipeline")
-        fig.suptitle("Week 12 - Image stitching: a panel with several gauges", x=0.01, ha="left",
+        fig.suptitle("Image stitching: a panel with several gauges", x=0.01, ha="left",
                      fontweight="semibold")
         fig.tight_layout()
-        fig.savefig(FIGS / "week12_stitching.png")
+        fig.savefig(FIGS / "panel_stitching.png")
     save_table(pd.DataFrame(readings or [{"gauge": "-", "true": None, "read": None, "status": "stitching failed",
                                           "error % FS": None}]).round(3), "stage10_stitched_panel")
     print(readings, "| stitch inliers:", info.get("n_inliers"))

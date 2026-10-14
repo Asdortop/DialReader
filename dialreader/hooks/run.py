@@ -47,6 +47,7 @@ def read_with_hooks(img, scale=None, vlm=None, use_parser=False, use_sentinel=Fa
         R = pipeline.Reading(reasons=["no scale: the parse was rejected, so the scale must be entered by hand"])
         return R, trace
 
+    trace["scale_used"] = scale
     R = pipeline.read_dial(img, scale, params, thresholds)
     post = None
     if use_sentinel and hooks_on:

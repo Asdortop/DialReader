@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
 
-from dialreader import pipeline, uncertainty as unc, w02_attributes as attrs
+from dialreader import pipeline, uncertainty as unc, attributes as attrs
 from dialreader.synth import GaugeSpec
 
 DATA = ROOT / "data"

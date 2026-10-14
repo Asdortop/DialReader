@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 
-from . import w05_restore as restore
+from . import restore
 
 
 def gaussian_blur(img, sigma):

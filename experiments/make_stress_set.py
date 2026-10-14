@@ -11,7 +11,7 @@ import csv
 import cv2
 
 from common import DATA, load_synth
-from dialreader import degrade, w02_attributes as attrs
+from dialreader import degrade, attributes as attrs
 
 STRESS = DATA / "synthetic_stress"
 

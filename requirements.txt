@@ -12,3 +12,6 @@ python-dotenv
 pyarrow
 huggingface_hub
 pytest
+fastapi
+uvicorn
+python-multipart
