@@ -47,7 +47,7 @@ def measurebench():
 
 
 def show(img, caption=None):
-    st.image(viz.rgb(img), caption=caption, use_container_width=True)
+    st.image(viz.rgb(img), caption=caption, use_column_width=True)
 
 
 def table(name, caption=None):
@@ -55,7 +55,7 @@ def table(name, caption=None):
     if path.exists():
         if caption:
             st.caption(caption)
-        st.dataframe(pd.read_csv(path), use_container_width=True, hide_index=True)
+        st.dataframe(pd.read_csv(path), hide_index=True)
     else:
         st.info(f"Not generated yet: run the experiment that writes {path.name}.")
 
@@ -63,7 +63,7 @@ def table(name, caption=None):
 def figure(name, caption=None):
     path = FIGS / name
     if path.exists():
-        st.image(str(path), caption=caption, use_container_width=True)
+        st.image(str(path), caption=caption, use_column_width=True)
 
 
 # ------------------------------------------------------------------ sidebar
@@ -201,7 +201,7 @@ with tab_read:
                              f"(flag above {s['threshold_fs']:.1f} %). The VLM value is never used as the reading.")
             if "repair" in trace:
                 with st.expander("Hook 3 repair loop", expanded=True):
-                    st.dataframe(pd.DataFrame(trace["repair"]), hide_index=True, use_container_width=True)
+                    st.dataframe(pd.DataFrame(trace["repair"]), hide_index=True)
 
         st.divider()
         st.subheader("Every stage")
